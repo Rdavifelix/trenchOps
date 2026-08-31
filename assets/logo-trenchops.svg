@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 810 880">
+  <defs>
+    <linearGradient id="tg" x1="810" y1="0" x2="0" y2="880" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2FB1F8"/>
+      <stop offset="1" stop-color="#2453DB"/>
+    </linearGradient>
+  </defs>
+  <!-- telhado + chaminé -->
+  <path fill="url(#tg)" d="M5,290 L405,5 L585,135 L585,75 L685,75 L685,200 L720,200 L720,232 L800,290 L800,355 L405,70 L5,355 Z"/>
+  <!-- janela 2x2 -->
+  <path fill="url(#tg)" d="M355,220h44v44h-44z M412,220h44v44h-44z M355,277h44v44h-44z M412,277h44v44h-44z"/>
+  <!-- T com fenda central e ponta -->
+  <path fill="url(#tg)" d="M100,350 L390,350 L390,755 L407.5,800 L425,755 L425,350 L710,350 L710,445 L645,445 L645,480 L540,480 L540,790 L405,880 L270,790 L270,480 L100,480 Z"/>
+</svg>
