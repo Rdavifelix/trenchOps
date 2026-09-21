@@ -13,7 +13,7 @@
   4. Thumbnail — o bloco .mock é um preview ilustrativo; pode trocar por um
      print real do seu site quando ele existir (img.rounded, mesmas medidas).
 -->
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -172,8 +172,8 @@ fbq('init','SEU_PIXEL_ID');fbq('track','PageView');
   </header>
 
   <div class="hero">
-    <h1>We Help Contractors Get More Jobs With AI, Smart Websites, and 5 Star Reviews for Just</h1>
-    <p class="price">$297/mo<span>&#128071;</span></p>
+    <h1>Como Ajudamos Contractors a fechar mais jobs usando Websites, avaliações 5 estrelas IA e seu Perfil no Google por apenas</h1>
+    <p class="price">$297/mês<span>&#128071;</span></p>
   </div>
 
   <!-- preview com botão de play — o clique abre o pop-up -->
@@ -188,17 +188,17 @@ fbq('init','SEU_PIXEL_ID');fbq('track','PageView');
         <div class="mock-cards"><b></b><b></b><b></b></div>
       </div>
     </div>
-    <button class="play-overlay js-open" aria-label="See how it works">
+    <button class="play-overlay js-open" aria-label="Veja como funciona">
       <span class="play-badge">
         <svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5z"/></svg>
       </span>
     </button>
   </div>
 
-  <p class="step1"><span class="u">Step 1:</span> Watch this quick video to see what we do and how we help you grow</p>
+  <p class="step1"><span class="u">Passo 1:</span> Assista a este vídeo rápido para ver o que fazemos e como ajudamos você a crescer</p>
 
   <div class="cta-row">
-    <button class="optin-cta-pulse js-open">Click to See How it Works</button>
+    <button class="optin-cta-pulse js-open">Clique para ver como funciona</button>
   </div>
 
   <!-- ═══ DEPOIMENTOS — descomentar quando houver depoimentos REAIS de clientes.
@@ -240,7 +240,7 @@ fbq('init','SEU_PIXEL_ID');fbq('track','PageView');
   </section>
   ═══ FIM DEPOIMENTOS ═══ -->
 
-  <footer>&copy; Copyright Trenchops 2026 | All Rights Reserved</footer>
+  <footer>&copy; Trenchops 2026 | Todos os direitos reservados</footer>
 
 </div>
 
@@ -248,18 +248,18 @@ fbq('init','SEU_PIXEL_ID');fbq('track','PageView');
 <div class="modal-root" id="modal" role="dialog" aria-modal="true">
   <div class="modal-backdrop js-close-bg"></div>
   <div class="modal-box">
-    <button class="modal-close js-close" aria-label="Close">
+    <button class="modal-close js-close" aria-label="Fechar">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
     <div class="modal-panel">
 
       <!-- cabeçalho: só aparece no passo 1 -->
       <div class="q-header" id="qHeader">
-        <span class="q-title">We Help Contractors Get More Leads For Just</span>
-        <span class="q-price">$297/month</span>
+        <span class="q-title">Ajudamos contractors a conseguir mais clientes por apenas</span>
+        <span class="q-price">$297/mês</span>
       </div>
 
-      <button class="q-back" id="qBack" type="button">&larr; Back</button>
+      <button class="q-back" id="qBack" type="button">&larr; Voltar</button>
 
       <div class="progress-track">
         <div class="progress-fill" id="qFill">
@@ -288,22 +288,22 @@ var WEBHOOK_URL = "";
 var THANK_YOU_PAGE = "we-will-call-you.html";
 
 var STEPS = [
-  {type:"options", pct:50, q:"What Kind of Contracting Work Do You Do? *", key:"work_type",
-   opts:["Residential","Commercial","Both Residential & Commercial","I Am Not a Contractor"]},
-  {type:"options", pct:60, q:"How's business right now?", key:"business_now",
-   opts:["Slow, I need jobs now","Okay, but not consistent","Busy, booked solid","Just starting my business"]},
-  {type:"options", pct:68, q:"When are you looking to fix that?", key:"timeline",
-   opts:["Right away","In the next month or two","Later this year","Just seeing what's out there"]},
-  {type:"options", pct:76, q:"What's your current monthly revenue?", key:"revenue",
+  {type:"options", pct:50, q:"Que tipo de trabalho você faz? *", key:"work_type",
+   opts:["Residencial","Comercial","Residencial e comercial","Não sou contractor"]},
+  {type:"options", pct:60, q:"Como está o movimento hoje?", key:"business_now",
+   opts:["Fraco, preciso de job agora","Razoável, mas sem constância","Cheio, agenda lotada","Estou começando agora"]},
+  {type:"options", pct:68, q:"Quando você quer resolver isso?", key:"timeline",
+   opts:["Imediatamente","No próximo mês ou dois","Ainda este ano","Só estou pesquisando"]},
+  {type:"options", pct:76, q:"Qual seu faturamento mensal hoje?", key:"revenue",
    opts:["$0-$10,000","$10,000-$25,000","$25,000-$100,000","$100,000+"]},
-  {type:"input", pct:84, q:"Your mobile phone", key:"phone", inputType:"tel",
-   placeholder:"(555) 123-4567", btn:"Continue", error:"Please enter a valid phone number"},
-  {type:"input", pct:90, q:"What's your best email?", key:"email", inputType:"email",
-   placeholder:"Email address", btn:"Continue", error:"Please enter a valid email"},
-  {type:"input", pct:95, q:"Your name", key:"name", inputType:"text",
-   placeholder:"Your name", btn:"Continue", error:"Please enter your name"},
-  {type:"input", pct:99, q:"What's your company name?", key:"company", inputType:"text",
-   placeholder:"Company name", btn:"Yes, I Want More Jobs", error:"Please enter your company name"}
+  {type:"input", pct:84, q:"Seu celular", key:"phone", inputType:"tel",
+   placeholder:"(555) 123-4567", btn:"Continuar", error:"Digite um telefone válido"},
+  {type:"input", pct:90, q:"Qual seu melhor e-mail?", key:"email", inputType:"email",
+   placeholder:"Seu e-mail", btn:"Continuar", error:"Digite um e-mail válido"},
+  {type:"input", pct:95, q:"Seu nome", key:"name", inputType:"text",
+   placeholder:"Seu nome", btn:"Continuar", error:"Digite seu nome"},
+  {type:"input", pct:99, q:"Qual o nome da sua empresa?", key:"company", inputType:"text",
+   placeholder:"Nome da empresa", btn:"Sim, quero mais jobs", error:"Digite o nome da sua empresa"}
 ];
 
 var modal = document.getElementById("modal"),
