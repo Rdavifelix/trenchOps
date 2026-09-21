@@ -1,0 +1,425 @@
+<!doctype html>
+<!--
+  TRENCHOPS — Landing de captação (opt-in)
+
+  URL: /cadastro/ — a raiz do site redireciona para cá preservando os UTMs.
+
+  FLUXO: foto (thumbnail com play) OU botão verde → pop-up com quiz de 8 passos
+         (4 perguntas de qualificação + telefone + e-mail + nome + empresa)
+         → envia → redireciona para we-will-call-you.html preservando UTMs
+
+  CHECKLIST ANTES DE RODAR TRÁFEGO:
+  1. WEBHOOK_URL no <script> no fim — apontar para o inbound webhook do CRM.
+  2. Pixel do Meta — slot comentado logo abaixo no <head>.
+  3. Depoimentos — a seção está COMENTADA esperando depoimentos reais de clientes.
+  4. Thumbnail — o bloco .mock é um preview ilustrativo; pode trocar por um
+     print real do seu site quando ele existir (img.rounded, mesmas medidas).
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trenchops</title>
+<link rel="canonical" href="https://thetrenchops.com/cadastro/">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-trenchops.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+<!-- PIXEL DO META — descomentar e colocar seu ID
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','SEU_PIXEL_ID');fbq('track','PageView');
+</script>
+-->
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000;min-height:100vh;overflow-x:hidden}
+  img,svg{max-width:100%;display:block}
+  button{font-family:inherit;border:none;background:none;cursor:pointer}
+
+  .container{max-width:1170px;margin:0 auto;padding:32px 12px}
+  @media(min-width:640px){.container{padding:40px 24px}}
+
+  /* ── topo / logo ── */
+  header{display:flex;justify-content:center;margin-bottom:16px}
+  @media(min-width:640px){header{margin-bottom:24px}}
+  .logo{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none}
+  .logo-icon{height:52px;width:auto}
+  .logo-word{font-family:'Poppins',Arial,Helvetica,sans-serif;font-weight:600;font-size:21px;line-height:1;color:#1b2b63}
+
+  .hero{text-align:center}
+  .hero h1{font-size:30px;font-weight:700;line-height:1.15;color:#fbba2f}
+  .hero .price{margin-top:8px;font-size:30px;font-style:italic;font-weight:800;color:#000}
+  @media(min-width:640px){.hero h1{font-size:50px}.hero .price{font-size:50px}}
+
+  /* ── thumbnail (preview ilustrativo — o clique abre o pop-up) ── */
+  .thumb{position:relative;max-width:768px;margin:32px auto 0}
+  .mock{aspect-ratio:900/506;border-radius:8px;background:#eef1f6;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+  .mock-bar{height:36px;background:#dde3ec;display:flex;align-items:center;gap:6px;padding:0 14px}
+  .mock-bar i{display:block;width:10px;height:10px;border-radius:50%;background:#b9c2d0}
+  .mock-body{padding:30px 34px;filter:blur(7px)}
+  .mock-head{width:190px;height:30px;border-radius:6px;background:#1b2b63}
+  .mock-line{height:14px;border-radius:7px;background:#c3cbd8;margin-top:16px}
+  .mock-line.w60{width:60%}
+  .mock-line.w40{width:40%}
+  .mock-btn{width:150px;height:34px;border-radius:8px;background:#2563eb;margin-top:20px}
+  .mock-cards{display:flex;gap:16px;margin-top:26px}
+  .mock-cards b{flex:1;height:74px;border-radius:8px;background:#d7dde7}
+  .thumb .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(0,0,0,.2);transition:background .2s;width:100%}
+  .thumb .play-overlay:hover{background:rgba(0,0,0,.32)}
+  .play-badge{display:inline-flex;height:3.25rem;width:4.75rem;align-items:center;justify-content:center;border-radius:.55rem;background:#ff0000;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:transform .2s}
+  .thumb .play-overlay:hover .play-badge{transform:scale(1.06)}
+  .play-badge svg{height:22px;width:22px;fill:#fff}
+
+  .step1{margin-top:24px;text-align:center;font-size:18px;font-weight:800;color:#171717}
+  @media(min-width:640px){.step1{font-size:23px}}
+  .step1 .u{text-decoration:underline}
+
+  /* ── CTA verde pulsante ── */
+  .cta-row{display:flex;justify-content:center;margin-top:16px}
+  .optin-cta-pulse{border-radius:8px;background:#37ca37;padding:20px 40px;font-size:24px;font-weight:700;color:#000;box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);animation:optin-cta-pulse 2s ease-in-out infinite}
+  @media(min-width:640px){.optin-cta-pulse{font-size:30px;padding:24px 48px}}
+  @keyframes optin-cta-pulse{
+    0%,100%{box-shadow:rgba(0,0,0,.16) 0 5px 10px -3px,rgba(0,0,0,.1) 0 2px 6px -3px,rgba(55,202,55,.55) 0 0 0 1px,rgba(55,202,55,.32) 0 0 20px 1px}
+    50%{box-shadow:rgba(0,0,0,.2) 0 9px 18px -5px,rgba(0,0,0,.12) 0 4px 10px -4px,rgba(55,202,55,0) 0 0 0 14px,rgba(55,202,55,.52) 0 0 38px 6px}
+  }
+
+  /* ── depoimentos (estrutura pronta — seção comentada no HTML) ── */
+  .t-first{padding:40px 0;margin-top:32px}
+  .t-first .inner{max-width:672px;margin:0 auto}
+  .t-grid-wrap{padding:16px 0 48px}
+  .t-grid{max-width:896px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:32px}
+  @media(min-width:640px){.t-grid{grid-template-columns:1fr 1fr}}
+  .t-card{overflow:hidden;border-radius:8px;background:#fff;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1)}
+  .t-video{position:relative;padding-top:56.25%;background:#e5e5e5}
+  .t-video span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#a3a3a3;font-size:40px}
+  .t-body{padding:16px}
+  .t-quote{font-size:14px;font-weight:700;color:#262626;line-height:1.45}
+  .t-stars{margin-top:8px;color:#fbba2f;font-size:16px}
+  .t-name{margin-top:4px;font-weight:700;color:#000;font-size:16px}
+
+  footer{padding:32px 0;text-align:center;font-size:14px;color:#737373}
+
+  /* ═══════════ POP-UP DO QUIZ ═══════════ */
+  .modal-root{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;overscroll-behavior:none;padding:16px}
+  .modal-root.open{display:flex}
+  .modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  .modal-box{position:relative;z-index:10;width:100%;max-width:512px}
+  .modal-close{position:absolute;right:-12px;top:-12px;z-index:20;display:flex;height:40px;width:40px;align-items:center;justify-content:center;border-radius:9999px;background:#fff;color:#404040;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);outline:1px solid rgba(0,0,0,.1);transition:transform .15s}
+  .modal-close:hover{transform:scale(1.06)}
+  .modal-close svg{height:20px;width:20px}
+  .modal-panel{overflow:hidden;border-radius:12px;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.35);padding:24px}
+
+  .q-header{text-align:center}
+  .q-title{display:block;font-size:22px;font-weight:700;line-height:1.25;color:#fbba2f}
+  .q-price{display:block;margin-top:6px;font-size:22px;font-weight:800;font-style:italic;color:#000}
+  @media(min-width:640px){.q-title{font-size:36px}.q-price{font-size:36px}}
+
+  .q-back{display:none;font-size:14px;color:#a3a3a3;padding:0 0 10px;text-align:left}
+  .q-back:hover{color:#525252}
+  .q-back.show{display:block}
+
+  .progress-track{position:relative;margin-top:18px;height:22px;width:100%;border-radius:9999px;background:#e9e9e9;overflow:hidden}
+  .progress-fill{position:absolute;top:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:9999px;background:#37ca37;padding:0 4px;transition:width .3s ease;width:50%}
+  .progress-fill .pct{position:relative;z-index:2;font-size:11px;font-weight:700;color:#fff}
+  .progress-stripes{pointer-events:none;position:absolute;inset:-24px 0 0 -24px;right:0;background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.3) 0,rgba(255,255,255,.3) 8px,rgba(255,255,255,.12) 8px,rgba(255,255,255,.12) 16px);animation:progress-stripes-right .9s linear infinite}
+  @keyframes progress-stripes-right{0%{transform:translateX(0)}100%{transform:translateX(24px)}}
+
+  .q-step{margin-top:22px;animation:optin-survey-step-in .28s ease-out}
+  @keyframes optin-survey-step-in{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}}
+  .q-question{text-align:center;font-size:18px;font-weight:700;color:#141414}
+  .q-options{margin-top:16px;display:flex;flex-direction:column;gap:14px}
+  .q-option{width:100%;border-radius:12px;border:2px solid #e5e5e5;background:#fff;padding:14px 20px;font-size:16px;font-weight:700;color:#141414;text-align:center;transition:border-color .15s,background .15s}
+  .q-option:hover{border-color:#cfcfcf}
+  .q-option.selected{background:#ffc107;border-color:#ffc107}
+
+  .q-input{width:100%;border-radius:12px;border:2px solid #e5e5e5;padding:14px 20px;font-size:16px;font-weight:600;color:#141414;outline:none;transition:border-color .15s;font-family:inherit}
+  .q-input:focus{border-color:#ffc107}
+  .q-input.error{border-color:#ef4444}
+  .q-error{display:none;margin-top:8px;font-size:13px;color:#ef4444;text-align:center;font-weight:600}
+  .q-error.show{display:block}
+  .q-continue{margin-top:14px;width:100%;border-radius:12px;background:#fcb92e;padding:14px 16px;font-size:18px;font-weight:700;color:#010101;transition:filter .15s}
+  .q-continue:hover{filter:brightness(1.05)}
+  .q-continue:disabled{opacity:.7;cursor:default}
+
+  /* honeypot anti-spam */
+  .hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <a href="#" class="logo" aria-label="Trenchops">
+      <svg class="logo-icon" viewBox="0 0 810 880" aria-hidden="true">
+        <defs>
+          <linearGradient id="tg" x1="810" y1="0" x2="0" y2="880" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#2FB1F8"/>
+            <stop offset="1" stop-color="#2453DB"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#tg)" d="M5,290 L405,5 L585,135 L585,75 L685,75 L685,200 L720,200 L720,232 L800,290 L800,355 L405,70 L5,355 Z"/>
+        <path fill="url(#tg)" d="M355,220h44v44h-44z M412,220h44v44h-44z M355,277h44v44h-44z M412,277h44v44h-44z"/>
+        <path fill="url(#tg)" d="M100,350 L390,350 L390,755 L407.5,800 L425,755 L425,350 L710,350 L710,445 L645,445 L645,480 L540,480 L540,790 L405,880 L270,790 L270,480 L100,480 Z"/>
+      </svg>
+      <span class="logo-word">Trenchops</span>
+    </a>
+  </header>
+
+  <div class="hero">
+    <h1>Como Ajudamos Contractors a fechar mais jobs usando Websites, avaliações 5 estrelas IA e seu Perfil no Google por apenas</h1>
+    <p class="price">$297/mês<span>&#128071;</span></p>
+  </div>
+
+  <!-- preview com botão de play — o clique abre o pop-up -->
+  <div class="thumb">
+    <div class="mock" aria-hidden="true">
+      <div class="mock-bar"><i></i><i></i><i></i></div>
+      <div class="mock-body">
+        <div class="mock-head"></div>
+        <div class="mock-line w60"></div>
+        <div class="mock-line w40"></div>
+        <div class="mock-btn"></div>
+        <div class="mock-cards"><b></b><b></b><b></b></div>
+      </div>
+    </div>
+    <button class="play-overlay js-open" aria-label="Veja como funciona">
+      <span class="play-badge">
+        <svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5z"/></svg>
+      </span>
+    </button>
+  </div>
+
+  <p class="step1"><span class="u">Passo 1:</span> Assista a este vídeo rápido para ver o que fazemos e como ajudamos você a crescer</p>
+
+  <div class="cta-row">
+    <button class="optin-cta-pulse js-open">Clique para ver como funciona</button>
+  </div>
+
+  <!-- ═══ DEPOIMENTOS — descomentar quando houver depoimentos REAIS de clientes.
+       Estrutura: 1º card centralizado, depois grade de 2. Cada card tem slot de
+       vídeo (16:9), frase, 5 estrelas e nome.
+
+  <section class="t-first">
+    <div class="inner">
+      <div class="t-card">
+        <div class="t-video"><span>&#9654;</span></div>
+        <div class="t-body">
+          <p class="t-quote">"[FRASE DO CLIENTE 1]"</p>
+          <p class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+          <p class="t-name">[Nome]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="t-grid-wrap">
+    <div class="t-grid">
+      <div class="t-card">
+        <div class="t-video"><span>&#9654;</span></div>
+        <div class="t-body">
+          <p class="t-quote">"[FRASE DO CLIENTE 2]"</p>
+          <p class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+          <p class="t-name">[Nome]</p>
+        </div>
+      </div>
+      <div class="t-card">
+        <div class="t-video"><span>&#9654;</span></div>
+        <div class="t-body">
+          <p class="t-quote">"[FRASE DO CLIENTE 3]"</p>
+          <p class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+          <p class="t-name">[Nome]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  ═══ FIM DEPOIMENTOS ═══ -->
+
+  <footer>&copy; Trenchops 2026 | Todos os direitos reservados</footer>
+
+</div>
+
+<!-- ═══════════ POP-UP ═══════════ -->
+<div class="modal-root" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop js-close-bg"></div>
+  <div class="modal-box">
+    <button class="modal-close js-close" aria-label="Fechar">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <div class="modal-panel">
+
+      <!-- cabeçalho: só aparece no passo 1 -->
+      <div class="q-header" id="qHeader">
+        <span class="q-title">Ajudamos contractors a conseguir mais clientes por apenas</span>
+        <span class="q-price">$297/mês</span>
+      </div>
+
+      <button class="q-back" id="qBack" type="button">&larr; Voltar</button>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="qFill">
+          <div class="progress-stripes"></div>
+          <span class="pct" id="qPct">50%</span>
+        </div>
+      </div>
+
+      <div id="qStep"></div>
+
+      <!-- honeypot -->
+      <div class="hp" aria-hidden="true"><label>Fax<input type="text" name="fax" id="hpFax" tabindex="-1" autocomplete="off"></label></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   CONFIG
+   WEBHOOK_URL → inbound webhook do CRM (ex.: GoHighLevel →
+   Automations → Workflow → trigger "Inbound Webhook").
+   Vazio = só salva no localStorage e redireciona.
+   ════════════════════════════════════════════════════════════ */
+var WEBHOOK_URL = "";
+var THANK_YOU_PAGE = "../we-will-call-you.html";
+
+var STEPS = [
+  {type:"options", pct:50, q:"Que tipo de trabalho você faz? *", key:"work_type",
+   opts:["Residencial","Comercial","Residencial e comercial","Não sou contractor"]},
+  {type:"options", pct:60, q:"Como está o movimento hoje?", key:"business_now",
+   opts:["Fraco, preciso de job agora","Razoável, mas sem constância","Cheio, agenda lotada","Estou começando agora"]},
+  {type:"options", pct:68, q:"Quando você quer resolver isso?", key:"timeline",
+   opts:["Imediatamente","No próximo mês ou dois","Ainda este ano","Só estou pesquisando"]},
+  {type:"options", pct:76, q:"Qual seu faturamento mensal hoje?", key:"revenue",
+   opts:["$0-$10,000","$10,000-$25,000","$25,000-$100,000","$100,000+"]},
+  {type:"input", pct:84, q:"Seu celular", key:"phone", inputType:"tel",
+   placeholder:"(555) 123-4567", btn:"Continuar", error:"Digite um telefone válido"},
+  {type:"input", pct:90, q:"Qual seu melhor e-mail?", key:"email", inputType:"email",
+   placeholder:"Seu e-mail", btn:"Continuar", error:"Digite um e-mail válido"},
+  {type:"input", pct:95, q:"Seu nome", key:"name", inputType:"text",
+   placeholder:"Seu nome", btn:"Continuar", error:"Digite seu nome"},
+  {type:"input", pct:99, q:"Qual o nome da sua empresa?", key:"company", inputType:"text",
+   placeholder:"Nome da empresa", btn:"Sim, quero mais jobs", error:"Digite o nome da sua empresa"}
+];
+
+var modal = document.getElementById("modal"),
+    qHeader = document.getElementById("qHeader"),
+    qBack = document.getElementById("qBack"),
+    qFill = document.getElementById("qFill"),
+    qPct = document.getElementById("qPct"),
+    qStep = document.getElementById("qStep"),
+    current = 0,
+    answers = {},
+    sending = false;
+
+function openModal(){ modal.classList.add("open"); document.body.style.overflow = "hidden"; render(current); }
+function closeModal(){ modal.classList.remove("open"); document.body.style.overflow = ""; }
+
+document.querySelectorAll(".js-open").forEach(function(b){ b.addEventListener("click", openModal); });
+document.querySelector(".js-close").addEventListener("click", closeModal);
+document.querySelector(".js-close-bg").addEventListener("click", closeModal);
+document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeModal(); });
+
+qBack.addEventListener("click", function(){ if (current > 0) render(current - 1); });
+
+function render(i){
+  current = i;
+  var s = STEPS[i];
+  qHeader.style.display = i === 0 ? "" : "none";
+  qBack.classList.toggle("show", i > 0);
+  qFill.style.width = s.pct + "%";
+  qPct.textContent = s.pct + "%";
+
+  var el = document.createElement("div");
+  el.className = "q-step";
+  var h = '<p class="q-question">' + s.q + '</p>';
+
+  if (s.type === "options"){
+    h += '<div class="q-options">';
+    s.opts.forEach(function(o, k){ h += '<button type="button" class="q-option" data-k="' + k + '">' + o + '</button>'; });
+    h += '</div>';
+    el.innerHTML = h;
+    el.querySelectorAll(".q-option").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        answers[s.key] = s.opts[btn.dataset.k];
+        btn.classList.add("selected");
+        setTimeout(function(){ next(); }, 250);
+      });
+    });
+  } else {
+    h += '<div class="q-options">';
+    h += '<input class="q-input" id="qInput" type="' + s.inputType + '" placeholder="' + s.placeholder + '" autocomplete="on">';
+    h += '<p class="q-error" id="qError">' + s.error + '</p>';
+    h += '<button type="button" class="q-continue" id="qGo">' + s.btn + '</button>';
+    h += '</div>';
+    el.innerHTML = h;
+    var input = el.querySelector("#qInput"), err = el.querySelector("#qError"), go = el.querySelector("#qGo");
+    if (answers[s.key]) input.value = answers[s.key];
+    if (s.key === "phone") input.addEventListener("input", function(){ input.value = maskPhone(input.value); });
+    function submit(){
+      var v = input.value.trim();
+      if (!validate(s.key, v)){ input.classList.add("error"); err.classList.add("show"); input.focus(); return; }
+      input.classList.remove("error"); err.classList.remove("show");
+      answers[s.key] = v;
+      next();
+    }
+    go.addEventListener("click", submit);
+    input.addEventListener("keydown", function(e){ if (e.key === "Enter") submit(); });
+    setTimeout(function(){ input.focus(); }, 300);
+  }
+
+  qStep.innerHTML = "";
+  qStep.appendChild(el);
+}
+
+function next(){
+  if (current < STEPS.length - 1){ render(current + 1); } else { finish(); }
+}
+
+function maskPhone(v){
+  var d = v.replace(/\D/g, "").slice(0, 11);
+  if (d.length <= 3) return d.length ? "(" + d : "";
+  if (d.length <= 6) return "(" + d.slice(0,3) + ") " + d.slice(3);
+  return "(" + d.slice(0,3) + ") " + d.slice(3,6) + "-" + d.slice(6,10);
+}
+
+function validate(key, v){
+  if (key === "phone") return v.replace(/\D/g, "").length >= 10;
+  if (key === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  return v.length > 1;
+}
+
+function finish(){
+  if (sending) return;
+  sending = true;
+  if (document.getElementById("hpFax").value){ window.location.href = THANK_YOU_PAGE; return; } // bot → descarta
+
+  var params = new URLSearchParams(window.location.search);
+  var lead = {
+    answers: answers,
+    utm_source: params.get("utm_source") || "",
+    utm_medium: params.get("utm_medium") || "",
+    utm_campaign: params.get("utm_campaign") || "",
+    utm_content: params.get("utm_content") || "",
+    page: window.location.href,
+    ts: new Date().toISOString()
+  };
+  try { localStorage.setItem("funil_lead", JSON.stringify(lead)); } catch(e){}
+  if (typeof fbq === "function") fbq("track", "Lead");
+  if (WEBHOOK_URL){
+    fetch(WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(lead), keepalive:true}).catch(function(){});
+  }
+  // preserva os UTMs no redirect (atribuição do pixel na página seguinte)
+  window.location.href = THANK_YOU_PAGE + (window.location.search || "");
+}
+</script>
+
+</body>
+</html>
