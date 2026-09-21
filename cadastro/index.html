@@ -42,6 +42,7 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   html{-webkit-text-size-adjust:100%}
   body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#000;min-height:100vh;overflow-x:hidden}
   img,svg{max-width:100%;display:block}
+  img{height:auto} /* sem isso o atributo height vira altura fixa e o aspect-ratio e ignorado */
   button{font-family:inherit;border:none;background:none;cursor:pointer}
 
   .container{max-width:1170px;margin:0 auto;padding:32px 12px}
@@ -61,12 +62,31 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
 
   /* ── thumbnail (preview ilustrativo — o clique abre o pop-up) ── */
   .thumb{position:relative;max-width:768px;margin:32px auto 0}
-  .mock{display:block;width:100%;aspect-ratio:900/506;border-radius:8px;object-fit:cover;background:#eef1f6}
+  .mock{display:block;width:100%;height:auto;aspect-ratio:900/506;border-radius:8px;object-fit:cover;background:#eef1f6}
   .thumb .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(0,0,0,.2);transition:background .2s;width:100%}
   .thumb .play-overlay:hover{background:rgba(0,0,0,.32)}
   .play-badge{display:inline-flex;height:3.25rem;width:4.75rem;align-items:center;justify-content:center;border-radius:.55rem;background:#ff0000;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:transform .2s}
   .thumb .play-overlay:hover .play-badge{transform:scale(1.06)}
   .play-badge svg{height:22px;width:22px;fill:#fff}
+
+  /* ── celular: tudo encolhe para o CTA caber na primeira dobra ──────────
+     Com os tamanhos de desktop, o hero passava de 750px de altura e o botao
+     verde ficava abaixo da linha d'agua num iPhone. Aqui a headline diminui,
+     o preview fica panoramico (corta topo e base, nao a largura) e as folgas
+     verticais apertam. Nada disso muda acima de 640px. */
+  @media(max-width:639px){
+    .container{padding-top:20px}
+    header{margin-bottom:10px}
+    .logo-icon{height:42px}
+    .logo-word{font-size:18px}
+    .hero h1{font-size:22px}
+    .hero .price{font-size:26px;margin-top:6px}
+    .thumb{margin-top:16px}
+    .mock{aspect-ratio:2.2/1;object-position:center 30%}
+    .step1{margin-top:14px;font-size:15px}
+    .cta-row{margin-top:12px}
+    .optin-cta-pulse{font-size:20px;padding:16px 28px}
+  }
 
   .step1{margin-top:24px;text-align:center;font-size:18px;font-weight:800;color:#171717}
   @media(min-width:640px){.step1{font-size:23px}}
