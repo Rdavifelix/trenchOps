@@ -83,6 +83,29 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
     .hero .price{font-size:26px;margin-top:6px}
     .thumb{margin-top:16px}
     .mock{aspect-ratio:2.2/1;object-position:center 30%}
+  }
+  /* Tela alta o suficiente? O video cresce, porque o CTA continua cabendo.
+     A referencia e a ALTURA do viewport, nao a largura: e ela que decide se
+     o botao verde fica acima da dobra. */
+  /* Telas baixas (iPhone SE e afins, e qualquer celular com a barra do
+     navegador aberta): aperta mais ainda, senao o CTA escapa da dobra. */
+  @media(max-width:639px) and (max-height:620px){
+    .container{padding-top:12px}
+    .logo-icon{height:34px}
+    .logo-word{font-size:16px}
+    .hero h1{font-size:19px}
+    .hero .price{font-size:22px}
+    .mock{aspect-ratio:2.8/1}
+    .thumb{margin-top:12px}
+    .step1{margin-top:10px;font-size:14px}
+    .optin-cta-pulse{font-size:18px;padding:14px 24px}
+  }
+  @media(max-width:639px) and (min-height:700px){
+    .mock{aspect-ratio:2/1}
+  }
+  @media(max-width:639px) and (min-height:780px){
+    .mock{aspect-ratio:16/9}
+    .hero h1{font-size:24px}
     .step1{margin-top:14px;font-size:15px}
     .cta-row{margin-top:12px}
     .optin-cta-pulse{font-size:20px;padding:16px 28px}
@@ -128,7 +151,7 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .modal-panel{overflow:hidden;border-radius:12px;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.35);padding:24px}
 
   .q-header{text-align:center}
-  .q-title{display:block;font-size:22px;font-weight:700;line-height:1.25;color:#fbba2f}
+  .q-title{display:block;font-size:22px;font-weight:700;line-height:1.25;color:#1E9AE0}
   .q-price{display:block;margin-top:6px;font-size:22px;font-weight:800;font-style:italic;color:#000}
   @media(min-width:640px){.q-title{font-size:36px}.q-price{font-size:36px}}
 
