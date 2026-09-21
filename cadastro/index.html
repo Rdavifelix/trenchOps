@@ -26,16 +26,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
 
-<!-- PIXEL DO META — descomentar e colocar seu ID
+<!-- PIXEL DO META -->
 <script>
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
 n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','SEU_PIXEL_ID');fbq('track','PageView');
+fbq('init','937305316114895');fbq('track','PageView');
 </script>
--->
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=""></noscript>
 
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
@@ -470,9 +471,15 @@ function finish(){
   sending = true;
   if (document.getElementById("hpFax").value){ window.location.href = THANK_YOU_PAGE; return; } // bot -> descarta
   sendLead(false, true);
-  if (typeof fbq === "function") fbq("track", "Lead");
+
   // preserva os UTMs no redirect (atribuicao do pixel na pagina seguinte)
-  window.location.href = THANK_YOU_PAGE + (window.location.search || "");
+  function irParaProxima(){ window.location.href = THANK_YOU_PAGE + (window.location.search || ""); }
+
+  // o fbq sai por beacon; redirecionar no mesmo instante corta o evento no meio.
+  // 300ms e imperceptivel para o lead e suficiente para o Lead chegar ao Meta.
+  // O fetch do webhook nao precisa disso: vai com keepalive e sobrevive a navegacao.
+  if (typeof fbq === "function"){ fbq("track", "Lead"); setTimeout(irParaProxima, 300); }
+  else { irParaProxima(); }
 }
 </script>
 
