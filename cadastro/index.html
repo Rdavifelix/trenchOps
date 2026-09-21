@@ -283,9 +283,10 @@ fbq('init','SEU_PIXEL_ID');fbq('track','PageView');
 <script>
 /* ════════════════════════════════════════════════════════════
    CONFIG
-   WEBHOOK_URL → inbound webhook do CRM (ex.: GoHighLevel →
-   Automations → Workflow → trigger "Inbound Webhook").
-   Vazio = só salva no localStorage e redireciona.
+   WEBHOOK_URL → Inbound Webhook do GoHighLevel.
+   No GHL: Automations → Workflows → novo workflow → trigger
+   "Inbound Webhook" → copiar a URL e colar aqui.
+   Vazio = nada é enviado, o quiz só redireciona.
    ════════════════════════════════════════════════════════════ */
 var WEBHOOK_URL = "";
 var THANK_YOU_PAGE = "../we-will-call-you.html";
@@ -368,6 +369,8 @@ function render(i){
       if (!validate(s.key, v)){ input.classList.add("error"); err.classList.add("show"); input.focus(); return; }
       input.classList.remove("error"); err.classList.remove("show");
       answers[s.key] = v;
+      // o ultimo passo cai no finish(), que ja envia o lead completo
+      if (current < STEPS.length - 1) sendLead(true, false);
       next();
     }
     go.addEventListener("click", submit);
@@ -396,27 +399,79 @@ function validate(key, v){
   return v.length > 1;
 }
 
-function finish(){
-  if (sending) return;
-  sending = true;
-  if (document.getElementById("hpFax").value){ window.location.href = THANK_YOU_PAGE; return; } // bot → descarta
+/* ── envio para o GoHighLevel ───────────────────────
+   O payload vai ACHATADO, num nivel so: no workflow do GHL cada
+   campo aparece como {{inboundWebhookRequest.campo}}, e objeto
+   aninhado e sofrivel de mapear por la.
 
-  var params = new URLSearchParams(window.location.search);
-  var lead = {
-    answers: answers,
-    utm_source: params.get("utm_source") || "",
-    utm_medium: params.get("utm_medium") || "",
-    utm_campaign: params.get("utm_campaign") || "",
-    utm_content: params.get("utm_content") || "",
+   O lead e enviado MAIS DE UMA VEZ de proposito: assim que o
+   telefone e validado ja existe contato no CRM, e cada passo
+   seguinte atualiza. Quem abandona no meio do quiz deixa de ser
+   perdido. O GHL junta os envios no mesmo contato desde que a
+   deduplicacao esteja ligada (Settings -> Business Profile ->
+   "Allow Duplicate Contact" DESMARCADO).
+   ─────────────────────────────────────────── */
+var lastSentAt = 0, reenvio = null;
+
+// o GHL disca e deduplica melhor em E.164; o quiz e US, entao +1
+function toE164(v){
+  var d = (v || "").replace(/\D/g, "");
+  if (d.length === 11 && d.charAt(0) === "1") return "+" + d;
+  if (d.length === 10) return "+1" + d;
+  return "";
+}
+
+function buildLead(partial){
+  var p = new URLSearchParams(window.location.search);
+  var partes = (answers.name || "").trim().split(/\s+/);
+  return {
+    partial: partial,
+    name: answers.name || "",
+    first_name: partes[0] || "",
+    last_name: partes.slice(1).join(" "),
+    phone: toE164(answers.phone) || answers.phone || "",
+    phone_formatted: answers.phone || "",
+    email: answers.email || "",
+    company: answers.company || "",
+    contracting_work: answers.work_type || "",
+    business_status: answers.business_now || "",
+    fix_timeline: answers.timeline || "",
+    revenue: answers.revenue || "",
+    utm_source: p.get("utm_source") || "",
+    utm_medium: p.get("utm_medium") || "",
+    utm_campaign: p.get("utm_campaign") || "",
+    utm_content: p.get("utm_content") || "",
+    fbclid: p.get("fbclid") || "",
     page: window.location.href,
     ts: new Date().toISOString()
   };
-  try { localStorage.setItem("funil_lead", JSON.stringify(lead)); } catch(e){}
-  if (typeof fbq === "function") fbq("track", "Lead");
-  if (WEBHOOK_URL){
-    fetch(WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(lead), keepalive:true}).catch(function(){});
+}
+
+function sendLead(partial, force){
+  if (!answers.phone) return;                         // sem telefone nao ha contato a criar
+  if (document.getElementById("hpFax").value) return; // bot
+  var agora = Date.now(), falta = 4000 - (agora - lastSentAt);
+  if (!force && falta > 0){
+    // nao metralha o webhook, mas tambem NAO descarta: reagenda para quando a
+    // janela abrir. Descartar perderia o passo de quem preenche rapido e some.
+    if (!reenvio) reenvio = setTimeout(function(){ reenvio = null; sendLead(partial, true); }, falta);
+    return;
   }
-  // preserva os UTMs no redirect (atribuição do pixel na página seguinte)
+  if (reenvio){ clearTimeout(reenvio); reenvio = null; }
+  lastSentAt = agora;
+  var lead = buildLead(partial);
+  try { localStorage.setItem("funil_lead", JSON.stringify(lead)); } catch(e){}
+  if (!WEBHOOK_URL) return;
+  fetch(WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(lead), keepalive:true}).catch(function(){});
+}
+
+function finish(){
+  if (sending) return;
+  sending = true;
+  if (document.getElementById("hpFax").value){ window.location.href = THANK_YOU_PAGE; return; } // bot -> descarta
+  sendLead(false, true);
+  if (typeof fbq === "function") fbq("track", "Lead");
+  // preserva os UTMs no redirect (atribuicao do pixel na pagina seguinte)
   window.location.href = THANK_YOU_PAGE + (window.location.search || "");
 }
 </script>

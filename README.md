@@ -21,7 +21,22 @@ Abra `http://localhost:8777` — a raiz redireciona para `/cadastro/`.
 
 ## Antes de rodar tráfego
 
-1. **`WEBHOOK_URL`** — constante no `<script>` do `cadastro/index.html`. Apontar para o inbound webhook do CRM (GoHighLevel: Automations → Workflow → trigger "Inbound Webhook"). O payload já sai com as 8 respostas + UTMs + timestamp.
+1. **`WEBHOOK_URL`** — constante no `<script>` do `cadastro/index.html`. Apontar para o
+   **Inbound Webhook do GoHighLevel** (Automations → Workflows → novo workflow → trigger
+   "Inbound Webhook" → copiar a URL). Enquanto estiver vazio, **nenhum lead é enviado**.
+
+   O payload vai achatado (um nível só), para o workflow acessar cada campo como
+   `{{inboundWebhookRequest.campo}}`:
+
+   `partial` · `name` · `first_name` · `last_name` · `phone` (E.164) · `phone_formatted` ·
+   `email` · `company` · `contracting_work` · `business_status` · `fix_timeline` · `revenue` ·
+   `utm_source` · `utm_medium` · `utm_campaign` · `utm_content` · `fbclid` · `page` · `ts`
+
+   **Captura parcial:** o lead é enviado assim que o telefone é validado e de novo a cada
+   passo seguinte, não só no fim. Quem abandona o quiz no meio não se perde. Por isso o
+   mesmo contato chega várias vezes — deixe a deduplicação ligada no GHL
+   (Settings → Business Profile → "Allow Duplicate Contact" **desmarcado**) e use
+   `partial` no workflow para separar quem terminou (`false`) de quem parou no meio (`true`).
 2. **Pixel do Meta** — slot comentado no `<head>` das duas páginas. O quiz já dispara `fbq('track','Lead')` no envio.
 3. **VSL** — colocar o vídeo em `assets/vsl.mp4`. Enquanto não existir, a página mostra um placeholder escuro no lugar do player.
 4. **Depoimentos** — as seções estão comentadas nos dois HTML esperando depoimentos **reais** de clientes (vídeo + frase + nome). Não publicar depoimento inventado.
