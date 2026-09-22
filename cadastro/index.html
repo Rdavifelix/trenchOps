@@ -4,13 +4,13 @@
 
   URL: /cadastro/ — a raiz do site redireciona para cá preservando os UTMs.
 
-  FLUXO: foto (thumbnail com play) OU botão verde → pop-up com quiz de 8 passos
-         (4 perguntas de qualificação + telefone + e-mail + nome + empresa)
-         → envia → redireciona para we-will-call-you.html preservando UTMs
+  FLUXO: foto (thumbnail com play) OU botão verde → pop-up com o survey do GHL
+         → o proprio GHL grava o lead e redireciona
 
   CHECKLIST ANTES DE RODAR TRÁFEGO:
-  1. WEBHOOK_URL no <script> no fim — apontar para o inbound webhook do CRM.
-  2. Pixel do Meta — slot comentado logo abaixo no <head>.
+  1. O formulario e o survey do GHL (YeSKvndClHpksrFiAtv5), embutido no pop-up.
+     Campos, validacao e destino se configuram no GHL, nao aqui.
+  2. Pixel do Meta — ja instalado no <head>.
   3. Depoimentos — a seção está COMENTADA esperando depoimentos reais de clientes.
   4. Thumbnail — assets/thumb-vsl.jpg, o frame que faz as vezes do player.
 -->
@@ -148,42 +148,17 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .modal-close{position:absolute;right:-12px;top:-12px;z-index:20;display:flex;height:40px;width:40px;align-items:center;justify-content:center;border-radius:9999px;background:#fff;color:#404040;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);outline:1px solid rgba(0,0,0,.1);transition:transform .15s}
   .modal-close:hover{transform:scale(1.06)}
   .modal-close svg{height:20px;width:20px}
-  .modal-panel{overflow:hidden;border-radius:12px;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.35);padding:24px}
+  .modal-panel{max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:12px;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.35);padding:24px}
 
   .q-header{text-align:center}
   .q-title{display:block;font-size:22px;font-weight:700;line-height:1.25;color:#1E9AE0}
   .q-price{display:block;margin-top:6px;font-size:22px;font-weight:800;font-style:italic;color:#000}
   @media(min-width:640px){.q-title{font-size:36px}.q-price{font-size:36px}}
 
-  .q-back{display:none;font-size:14px;color:#a3a3a3;padding:0 0 10px;text-align:left}
-  .q-back:hover{color:#525252}
-  .q-back.show{display:block}
-
-  .progress-track{position:relative;margin-top:18px;height:22px;width:100%;border-radius:9999px;background:#e9e9e9;overflow:hidden}
-  .progress-fill{position:absolute;top:0;bottom:0;left:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:9999px;background:#37ca37;padding:0 4px;transition:width .3s ease;width:50%}
-  .progress-fill .pct{position:relative;z-index:2;font-size:11px;font-weight:700;color:#fff}
-  .progress-stripes{pointer-events:none;position:absolute;inset:-24px 0 0 -24px;right:0;background-image:repeating-linear-gradient(-45deg,rgba(255,255,255,.3) 0,rgba(255,255,255,.3) 8px,rgba(255,255,255,.12) 8px,rgba(255,255,255,.12) 16px);animation:progress-stripes-right .9s linear infinite}
-  @keyframes progress-stripes-right{0%{transform:translateX(0)}100%{transform:translateX(24px)}}
-
-  .q-step{margin-top:22px;animation:optin-survey-step-in .28s ease-out}
-  @keyframes optin-survey-step-in{0%{opacity:0;transform:translateX(18px)}100%{opacity:1;transform:translateX(0)}}
-  .q-question{text-align:center;font-size:18px;font-weight:700;color:#141414}
-  .q-options{margin-top:16px;display:flex;flex-direction:column;gap:14px}
-  .q-option{width:100%;border-radius:12px;border:2px solid #e5e5e5;background:#fff;padding:14px 20px;font-size:16px;font-weight:700;color:#141414;text-align:center;transition:border-color .15s,background .15s}
-  .q-option:hover{border-color:#cfcfcf}
-  .q-option.selected{background:#ffc107;border-color:#ffc107}
-
-  .q-input{width:100%;border-radius:12px;border:2px solid #e5e5e5;padding:14px 20px;font-size:16px;font-weight:600;color:#141414;outline:none;transition:border-color .15s;font-family:inherit}
-  .q-input:focus{border-color:#ffc107}
-  .q-input.error{border-color:#ef4444}
-  .q-error{display:none;margin-top:8px;font-size:13px;color:#ef4444;text-align:center;font-weight:600}
-  .q-error.show{display:block}
-  .q-continue{margin-top:14px;width:100%;border-radius:12px;background:#fcb92e;padding:14px 16px;font-size:18px;font-weight:700;color:#010101;transition:filter .15s}
-  .q-continue:hover{filter:brightness(1.05)}
-  .q-continue:disabled{opacity:.7;cursor:default}
-
-  /* honeypot anti-spam */
-  .hp{position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden}
+  /* o survey do GHL traz progresso, botao de voltar e validacao proprios,
+     entao todo o CSS do quiz antigo saiu daqui junto com o JS */
+  .survey-embed{margin-top:18px}
+  .survey-embed iframe{display:block;width:100%;border:0}
 </style>
 </head>
 <body>
@@ -286,65 +261,29 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
         <span class="q-price">$297/mês</span>
       </div>
 
-      <button class="q-back" id="qBack" type="button">&larr; Voltar</button>
-
-      <div class="progress-track">
-        <div class="progress-fill" id="qFill">
-          <div class="progress-stripes"></div>
-          <span class="pct" id="qPct">50%</span>
-        </div>
+      <!-- Survey do GHL. O form_embed.js ajusta a altura deste iframe pelo id. -->
+      <div class="survey-embed">
+        <iframe src="https://api.thetrenchops.com/widget/survey/YeSKvndClHpksrFiAtv5"
+                id="YeSKvndClHpksrFiAtv5" title="survey" scrolling="no"
+                data-cookie-consent="true" data-cookie-consent-provider="auto"></iframe>
       </div>
-
-      <div id="qStep"></div>
-
-      <!-- honeypot -->
-      <div class="hp" aria-hidden="true"><label>Fax<input type="text" name="fax" id="hpFax" tabindex="-1" autocomplete="off"></label></div>
 
     </div>
   </div>
 </div>
 
+<script src="https://api.thetrenchops.com/js/form_embed.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
-   CONFIG
-   WEBHOOK_URL → Inbound Webhook do GoHighLevel.
-   No GHL: Automations → Workflows → novo workflow → trigger
-   "Inbound Webhook" → copiar a URL e colar aqui.
-   Vazio = nada é enviado, o quiz só redireciona.
+   O formulario agora e o survey do GHL, dentro do iframe acima.
+   Aqui sobrou o que e da pagina: abrir e fechar o pop-up, e
+   avisar o pixel quando o lead envia — o envio acontece dentro
+   do iframe, entao esta pagina so fica sabendo pelo aviso que o
+   GHL manda por postMessage.
    ════════════════════════════════════════════════════════════ */
-var WEBHOOK_URL = "https://services.leadconnectorhq.com/hooks/pLBD1TioRWvtJmmQut9n/webhook-trigger/27106d72-e349-4db2-ac84-943a786c3a9c";
-var THANK_YOU_PAGE = "../we-will-call-you/";
+var modal = document.getElementById("modal");
 
-var STEPS = [
-  {type:"options", pct:50, q:"Que tipo de trabalho você faz? *", key:"work_type",
-   opts:["Residencial","Comercial","Residencial e comercial","House Cleaner","Não sou contractor"]},
-  {type:"options", pct:60, q:"Como está o movimento hoje?", key:"business_now",
-   opts:["Fraco, preciso de job agora","Razoável, mas sem constância","Cheio, agenda lotada","Estou começando agora"]},
-  {type:"options", pct:68, q:"Quando você quer resolver isso?", key:"timeline",
-   opts:["Imediatamente","No próximo mês ou dois","Ainda este ano","Só estou pesquisando"]},
-  {type:"options", pct:76, q:"Qual seu faturamento mensal hoje?", key:"revenue",
-   opts:["$0-$10,000","$10,000-$25,000","$25,000-$100,000","$100,000+"]},
-  {type:"input", pct:84, q:"Seu celular", key:"phone", inputType:"tel",
-   placeholder:"(555) 123-4567", btn:"Continuar", error:"Digite um telefone válido"},
-  {type:"input", pct:90, q:"Qual seu melhor e-mail?", key:"email", inputType:"email",
-   placeholder:"Seu e-mail", btn:"Continuar", error:"Digite um e-mail válido"},
-  {type:"input", pct:95, q:"Seu nome", key:"name", inputType:"text",
-   placeholder:"Seu nome", btn:"Continuar", error:"Digite seu nome"},
-  {type:"input", pct:99, q:"Qual o nome da sua empresa?", key:"company", inputType:"text",
-   placeholder:"Nome da empresa", btn:"Sim, quero mais jobs", error:"Digite o nome da sua empresa"}
-];
-
-var modal = document.getElementById("modal"),
-    qHeader = document.getElementById("qHeader"),
-    qBack = document.getElementById("qBack"),
-    qFill = document.getElementById("qFill"),
-    qPct = document.getElementById("qPct"),
-    qStep = document.getElementById("qStep"),
-    current = 0,
-    answers = {},
-    sending = false;
-
-function openModal(){ modal.classList.add("open"); document.body.style.overflow = "hidden"; render(current); }
+function openModal(){ modal.classList.add("open"); document.body.style.overflow = "hidden"; }
 function closeModal(){ modal.classList.remove("open"); document.body.style.overflow = ""; }
 
 document.querySelectorAll(".js-open").forEach(function(b){ b.addEventListener("click", openModal); });
@@ -352,185 +291,15 @@ document.querySelector(".js-close").addEventListener("click", closeModal);
 document.querySelector(".js-close-bg").addEventListener("click", closeModal);
 document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeModal(); });
 
-qBack.addEventListener("click", function(){ if (current > 0) render(current - 1); });
-
-function render(i){
-  current = i;
-  var s = STEPS[i];
-  qHeader.style.display = i === 0 ? "" : "none";
-  qBack.classList.toggle("show", i > 0);
-  qFill.style.width = s.pct + "%";
-  qPct.textContent = s.pct + "%";
-
-  var el = document.createElement("div");
-  el.className = "q-step";
-  var h = '<p class="q-question">' + s.q + '</p>';
-
-  if (s.type === "options"){
-    h += '<div class="q-options">';
-    s.opts.forEach(function(o, k){ h += '<button type="button" class="q-option" data-k="' + k + '">' + o + '</button>'; });
-    h += '</div>';
-    el.innerHTML = h;
-    el.querySelectorAll(".q-option").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        answers[s.key] = s.opts[btn.dataset.k];
-        btn.classList.add("selected");
-        setTimeout(function(){ next(); }, 250);
-      });
-    });
-  } else {
-    h += '<div class="q-options">';
-    h += '<input class="q-input" id="qInput" type="' + s.inputType + '" placeholder="' + s.placeholder + '" autocomplete="on">';
-    h += '<p class="q-error" id="qError">' + s.error + '</p>';
-    h += '<button type="button" class="q-continue" id="qGo">' + s.btn + '</button>';
-    h += '</div>';
-    el.innerHTML = h;
-    var input = el.querySelector("#qInput"), err = el.querySelector("#qError"), go = el.querySelector("#qGo");
-    if (answers[s.key]) input.value = answers[s.key];
-    if (s.key === "phone") input.addEventListener("input", function(){ input.value = maskPhone(input.value); });
-    function submit(){
-      var v = input.value.trim();
-      if (!validate(s.key, v)){ input.classList.add("error"); err.classList.add("show"); input.focus(); return; }
-      input.classList.remove("error"); err.classList.remove("show");
-      answers[s.key] = v;
-      // o ultimo passo cai no finish(), que ja envia o lead completo
-      if (current < STEPS.length - 1) sendLead(true, false);
-      next();
-    }
-    go.addEventListener("click", submit);
-    input.addEventListener("keydown", function(e){ if (e.key === "Enter") submit(); });
-    setTimeout(function(){ input.focus(); }, 300);
-  }
-
-  qStep.innerHTML = "";
-  qStep.appendChild(el);
-}
-
-function next(){
-  if (current < STEPS.length - 1){ render(current + 1); } else { finish(); }
-}
-
-function maskPhone(v){
-  var d = v.replace(/\D/g, "").slice(0, 11);
-  if (d.length <= 3) return d.length ? "(" + d : "";
-  if (d.length <= 6) return "(" + d.slice(0,3) + ") " + d.slice(3);
-  return "(" + d.slice(0,3) + ") " + d.slice(3,6) + "-" + d.slice(6,10);
-}
-
-function validate(key, v){
-  if (key === "phone") return v.replace(/\D/g, "").length >= 10;
-  if (key === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-  return v.length > 1;
-}
-
-/* ── envio para o GoHighLevel ───────────────────────
-   O payload vai ACHATADO, num nivel so: no workflow do GHL cada
-   campo aparece como {{inboundWebhookRequest.campo}}, e objeto
-   aninhado e sofrivel de mapear por la.
-
-   O lead e enviado MAIS DE UMA VEZ de proposito: assim que o
-   telefone e validado ja existe contato no CRM, e cada passo
-   seguinte atualiza. Quem abandona no meio do quiz deixa de ser
-   perdido. O GHL junta os envios no mesmo contato desde que a
-   deduplicacao esteja ligada (Settings -> Business Profile ->
-   "Allow Duplicate Contact" DESMARCADO).
-   ─────────────────────────────────────────── */
-var lastSentAt = 0, reenvio = null;
-
-// o GHL disca e deduplica melhor em E.164; o quiz e US, entao +1
-function toE164(v){
-  var d = (v || "").replace(/\D/g, "");
-  if (d.length === 11 && d.charAt(0) === "1") return "+" + d;
-  if (d.length === 10) return "+1" + d;
-  return "";
-}
-
-/* Versao curta das respostas, para caber no card do pipeline do GHL.
-   Os rotulos do quiz sao longos demais para o card, que e estreito.
-   O que nao estiver no mapa passa direto, entao mexer no quiz nao quebra nada. */
-var CURTO = {
-  "Residencial": "Residencial",
-  "Comercial": "Comercial",
-  "Residencial e comercial": "Res+Com",
-  "Não sou contractor": "Não é contractor",
-  "$0-$10,000": "$0-10k",
-  "$10,000-$25,000": "$10-25k",
-  "$25,000-$100,000": "$25-100k",
-  "$100,000+": "$100k+",
-  "Imediatamente": "Agora",
-  "No próximo mês ou dois": "1-2 meses",
-  "Ainda este ano": "Este ano",
-  "Só estou pesquisando": "Pesquisando"
-};
-
-function curto(v){ return v ? (CURTO[v] || v) : ""; }
-
-// vira o nome da oportunidade no GHL: "Res+Com · $100k+ · Agora"
-function montaResumo(){
-  var partes = [curto(answers.work_type), curto(answers.revenue), curto(answers.timeline)];
-  return partes.filter(function(x){ return x; }).join(" · ");
-}
-
-function buildLead(partial){
-  var p = new URLSearchParams(window.location.search);
-  var partes = (answers.name || "").trim().split(/\s+/);
-  return {
-    partial: partial,
-    name: answers.name || "",
-    first_name: partes[0] || "",
-    last_name: partes.slice(1).join(" "),
-    phone: toE164(answers.phone) || answers.phone || "",
-    phone_formatted: answers.phone || "",
-    email: answers.email || "",
-    company: answers.company || "",
-    contracting_work: answers.work_type || "",
-    business_status: answers.business_now || "",
-    fix_timeline: answers.timeline || "",
-    revenue: answers.revenue || "",
-    resumo: montaResumo(),
-    utm_source: p.get("utm_source") || "",
-    utm_medium: p.get("utm_medium") || "",
-    utm_campaign: p.get("utm_campaign") || "",
-    utm_content: p.get("utm_content") || "",
-    fbclid: p.get("fbclid") || "",
-    page: window.location.href,
-    ts: new Date().toISOString()
-  };
-}
-
-function sendLead(partial, force){
-  if (!answers.phone) return;                         // sem telefone nao ha contato a criar
-  if (document.getElementById("hpFax").value) return; // bot
-  var agora = Date.now(), falta = 4000 - (agora - lastSentAt);
-  if (!force && falta > 0){
-    // nao metralha o webhook, mas tambem NAO descarta: reagenda para quando a
-    // janela abrir. Descartar perderia o passo de quem preenche rapido e some.
-    if (!reenvio) reenvio = setTimeout(function(){ reenvio = null; sendLead(partial, true); }, falta);
-    return;
-  }
-  if (reenvio){ clearTimeout(reenvio); reenvio = null; }
-  lastSentAt = agora;
-  var lead = buildLead(partial);
-  try { localStorage.setItem("funil_lead", JSON.stringify(lead)); } catch(e){}
-  if (!WEBHOOK_URL) return;
-  fetch(WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(lead), keepalive:true}).catch(function(){});
-}
-
-function finish(){
-  if (sending) return;
-  sending = true;
-  if (document.getElementById("hpFax").value){ window.location.href = THANK_YOU_PAGE; return; } // bot -> descarta
-  sendLead(false, true);
-
-  // preserva os UTMs no redirect (atribuicao do pixel na pagina seguinte)
-  function irParaProxima(){ window.location.href = THANK_YOU_PAGE + (window.location.search || ""); }
-
-  // o fbq sai por beacon; redirecionar no mesmo instante corta o evento no meio.
-  // 300ms e imperceptivel para o lead e suficiente para o Lead chegar ao Meta.
-  // O fetch do webhook nao precisa disso: vai com keepalive e sobrevive a navegacao.
-  if (typeof fbq === "function"){ fbq("track", "Lead"); setTimeout(irParaProxima, 300); }
-  else { irParaProxima(); }
-}
+var leadContado = false;
+window.addEventListener("message", function(e){
+  if (!/(^|\.)thetrenchops\.com$|leadconnectorhq\.com$/.test((function(){
+        try { return new URL(e.origin).hostname; } catch(x){ return ""; } })())) return;
+  var texto = typeof e.data === "string" ? e.data : JSON.stringify(e.data || "");
+  if (!/submit/i.test(texto) || leadContado) return;
+  leadContado = true;
+  if (typeof fbq === "function") fbq("track", "Lead");
+});
 </script>
 
 </body>
