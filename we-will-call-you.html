@@ -1,0 +1,35 @@
+<!doctype html>
+<!--
+  Rede de seguranca para o endereco antigo.
+
+  A pos-quiz virou /we-will-call-you/ (pasta). Quem tiver a versao anterior da
+  landing em cache -- o HTML e servido com max-age=600 -- ainda manda o lead
+  para /we-will-call-you.html, que sem este arquivo daria 404 bem no fim do
+  funil, depois de o lead ja ter preenchido tudo.
+
+  Redireciona em JS para preservar a querystring (UTMs), com meta refresh de
+  reserva. Nao ha risco de laco: o destino tem barra final e resolve para a
+  pasta.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vamos te ligar | Trenchops</title>
+<link rel="canonical" href="https://thetrenchops.com/we-will-call-you/">
+<link rel="icon" type="image/svg+xml" href="assets/logo-trenchops.svg">
+<script>
+  location.replace("/we-will-call-you/" + (location.search || "") + (location.hash || ""));
+</script>
+<meta http-equiv="refresh" content="0;url=/we-will-call-you/">
+<style>
+  html,body{height:100%}
+  body{margin:0;display:flex;align-items:center;justify-content:center;
+       background:#fff;color:#1a1a1a;font:16px/1.5 Arial,Helvetica,sans-serif}
+  a{color:#1E9AE0}
+</style>
+</head>
+<body>
+  <p>Um instante… <a href="/we-will-call-you/">clique aqui</a> se nada acontecer.</p>
+</body>
+</html>
