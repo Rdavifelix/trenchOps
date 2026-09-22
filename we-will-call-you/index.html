@@ -59,12 +59,14 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
 
   /* Mesmo verde e mesmo desenho do CTA da landing, sem a animacao de pulso:
      aqui o video e o protagonista e o botao nao deve disputar atencao com ele. */
-  .wa-cta{display:block;width:75%;margin:20px auto 0;border-radius:8px;background:#37ca37;
+  .wa-cta{display:none;width:75%;margin:20px auto 0;border-radius:8px;background:#37ca37;
           padding:16px 20px;font-size:17px;font-weight:700;color:#000;text-align:center;
           text-decoration:none;line-height:1.25;box-sizing:border-box;
           box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);
           transition:filter .15s}
   .wa-cta:hover{filter:brightness(.95)}
+  .wa-cta.revelado{display:block;animation:cta-entra .4s ease-out}
+  @keyframes cta-entra{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
   @media(min-width:640px){.wa-cta{font-size:22px;padding:18px 32px}}
 
   .t-first{padding:24px 0 40px}
@@ -171,6 +173,33 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
 
 </div>
 
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+/* O botao so aparece depois de LIBERAR_EM segundos ASSISTIDOS — nao de aba
+   aberta. Quem pausa ou sai da aba nao destrava o contato antes da hora.
+   O video tem 149s, entao 150 equivale a "ao terminar"; baixe o numero aqui
+   se quiser liberar antes. */
+var LIBERAR_EM = 150;
+var cta = document.getElementById("waCta");
+var liberado = false;
+
+function liberarCta(){
+  if (liberado) return;
+  liberado = true;
+  cta.classList.add("revelado");
+}
+
+/* Rede de seguranca: se a API do Vimeo nao carregar (bloqueador, rede ruim),
+   o lead ficaria sem CTA nenhum. Passado o tempo com folga, libera assim mesmo. */
+var reserva = setTimeout(liberarCta, (LIBERAR_EM + 25) * 1000);
+
+if (window.Vimeo) {
+  var player = new Vimeo.Player(document.querySelector(".video-wrap iframe"));
+  player.on("timeupdate", function(d){ if (d.seconds >= LIBERAR_EM) liberarCta(); });
+  player.on("ended", liberarCta);
+}
+</script>
 
 <script>
   // clique no WhatsApp e intencao de contato: marca no pixel para a campanha
