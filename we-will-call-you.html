@@ -57,6 +57,16 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .video-wrap{margin-top:24px;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#0e1526}
   .video-wrap iframe{display:block;width:100%;height:100%;border:0}
 
+  /* Mesmo verde e mesmo desenho do CTA da landing, sem a animacao de pulso:
+     aqui o video e o protagonista e o botao nao deve disputar atencao com ele. */
+  .wa-cta{display:block;max-width:560px;margin:20px auto 0;border-radius:8px;background:#37ca37;
+          padding:18px 24px;font-size:19px;font-weight:700;color:#000;text-align:center;
+          text-decoration:none;line-height:1.25;
+          box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);
+          transition:filter .15s}
+  .wa-cta:hover{filter:brightness(.95)}
+  @media(min-width:640px){.wa-cta{font-size:24px;padding:20px 40px}}
+
   .t-first{padding:24px 0 40px}
   @media(min-width:640px){.t-first{padding:32px 0 48px}}
   .t-first .inner{max-width:672px;margin:0 auto}
@@ -115,6 +125,8 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
           referrerpolicy="strict-origin-when-cross-origin"
           loading="eager"></iframe>
       </div>
+
+      <a class="wa-cta" id="waCta" href="https://wa.link/a932n7" target="_blank" rel="noopener">FURAR FILA E ENTRAR EM CONTATO</a>
     </div>
   </header>
 
@@ -159,6 +171,14 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
 
 </div>
 
+
+<script>
+  // clique no WhatsApp e intencao de contato: marca no pixel para a campanha
+  // poder otimizar por isso depois
+  document.getElementById("waCta").addEventListener("click", function(){
+    if (typeof fbq === "function") fbq("track", "Contact");
+  });
+</script>
 
 </body>
 </html>
