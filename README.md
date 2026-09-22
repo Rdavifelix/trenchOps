@@ -8,7 +8,7 @@ Site estático, sem build e sem dependência. Dois arquivos HTML + assets.
 |---|---|
 | `cadastro/index.html` | **A LP** (`/cadastro/`). Landing de captação: headline + preço, preview com play, CTA verde. Clicar na foto ou no botão abre o **pop-up com quiz de 8 passos** (4 perguntas de qualificação → telefone → e-mail → nome → empresa). Ao enviar, redireciona para a página seguinte preservando os UTMs. |
 | `index.html` | Redirecionador da raiz → `/cadastro/`, preservando a querystring (UTMs). |
-| `we-will-call-you.html` | Página pós-quiz: "assista ao vídeo, nossa equipe vai te ligar". Player da VSL com placeholder automático enquanto o vídeo não existe. |
+| `we-will-call-you/index.html` | **A pos-quiz** (`/we-will-call-you/`). Página pós-quiz: "assista ao vídeo, nossa equipe vai te ligar". Player da VSL com placeholder automático enquanto o vídeo não existe. |
 | `assets/logo-trenchops.svg` | Logo em vetor (ícone). |
 
 ## Rodar localmente
