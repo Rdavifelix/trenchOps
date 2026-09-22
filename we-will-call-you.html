@@ -4,7 +4,7 @@
   Destino do redirect depois que o lead completa o pop-up do index.html.
 
   CHECKLIST ANTES DE RODAR TRÁFEGO:
-  1. VSL — assets/vsl.mp4, com poster em assets/vsl-poster.jpg.
+  1. VSL — hospedada no Vimeo (video 1229012596), embutida via iframe.
   2. Depoimentos — seção comentada esperando depoimentos reais.
   3. Pixel do Meta — slot comentado no <head>.
 -->
@@ -54,16 +54,9 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .steps{margin:24px auto 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:8px;row-gap:4px;text-align:left;color:#000;font-size:16px;max-width:768px}
   .steps .u{font-weight:700;text-decoration:underline}
 
-  .video-wrap{margin-top:24px;width:100%;overflow:hidden;border-radius:8px;background:#f5f5f5}
-  .video-wrap video{display:block;width:100%;height:auto;border-radius:8px}
-  .video-fallback{aspect-ratio:16/9;background:#0e1526;border-radius:8px;display:flex;align-items:center;justify-content:center}
-  /* display:flex vence o atributo hidden, que so vale pela folha do navegador;
-     sem esta linha o placeholder escuro aparece sempre, embaixo do player */
-  .video-fallback[hidden]{display:none}
-  .video-fallback i{display:flex;height:84px;width:84px;border-radius:50%;background:rgba(255,255,255,.14);align-items:center;justify-content:center}
-  .video-fallback svg{height:34px;width:34px;fill:rgba(255,255,255,.75);margin-left:5px}
+  .video-wrap{margin-top:24px;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#0e1526}
+  .video-wrap iframe{display:block;width:100%;height:100%;border:0}
 
-  /* ── depoimentos (estrutura pronta — seção comentada no HTML) ── */
   .t-first{padding:24px 0 40px}
   @media(min-width:640px){.t-first{padding:32px 0 48px}}
   .t-first .inner{max-width:672px;margin:0 auto}
@@ -112,12 +105,15 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
       </p>
 
       <div class="video-wrap">
-        <!-- VSL em assets/vsl.mp4 (720p30, faststart). O placeholder abaixo
-             so aparece se o arquivo sumir. -->
-        <video id="vsl" src="assets/vsl.mp4" poster="assets/vsl-poster.jpg" controls playsinline preload="metadata"></video>
-        <div class="video-fallback" id="vslFallback" hidden>
-          <i><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5z"/></svg></i>
-        </div>
+        <!-- VSL hospedada no Vimeo (1229012596). Sai autoplay mudo, como manda o
+             texto acima ("ligue o som"); sem loop, que numa VSL so faz o lead
+             perder o fio depois de 2min29. -->
+        <iframe
+          src="https://player.vimeo.com/video/1229012596?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1"
+          title="Como a Trench Ops ajuda contractors"
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          loading="eager"></iframe>
       </div>
     </div>
   </header>
@@ -163,13 +159,6 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
 
 </div>
 
-<script>
-  // sem VSL ainda → mostra o placeholder escuro no lugar do player
-  (function(){
-    var v = document.getElementById("vsl"), fb = document.getElementById("vslFallback");
-    v.addEventListener("error", function(){ v.hidden = true; fb.hidden = false; }, true);
-  })();
-</script>
 
 </body>
 </html>
