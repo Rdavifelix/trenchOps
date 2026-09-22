@@ -38,7 +38,7 @@ Abra `http://localhost:8777` — a raiz redireciona para `/cadastro/`.
    (Settings → Business Profile → "Allow Duplicate Contact" **desmarcado**) e use
    `partial` no workflow para separar quem terminou (`false`) de quem parou no meio (`true`).
 2. **Pixel do Meta** — slot comentado no `<head>` das duas páginas. O quiz já dispara `fbq('track','Lead')` no envio.
-3. **VSL** — colocar o vídeo em `assets/vsl.mp4`. Enquanto não existir, a página mostra um placeholder escuro no lugar do player.
+3. **VSL** — `assets/vsl.mp4` (720p30, H.264 + AAC, `+faststart` para tocar sem baixar tudo), com poster em `assets/vsl-poster.jpg`. A moldura do navegador foi cortada da gravação original.
 4. **Depoimentos** — as seções estão comentadas nos dois HTML esperando depoimentos **reais** de clientes (vídeo + frase + nome). Não publicar depoimento inventado.
 5. **Thumbnail** — o bloco `.mock` do `cadastro/index.html` é um preview ilustrativo desfocado; trocar por um print real do site quando ele existir.
 

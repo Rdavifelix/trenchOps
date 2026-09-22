@@ -4,8 +4,7 @@
   Destino do redirect depois que o lead completa o pop-up do index.html.
 
   CHECKLIST ANTES DE RODAR TRÁFEGO:
-  1. VSL — colocar o arquivo em assets/vsl.mp4 (enquanto não existir, a página
-     mostra um placeholder escuro no lugar do player, sem quebrar).
+  1. VSL — assets/vsl.mp4, com poster em assets/vsl-poster.jpg.
   2. Depoimentos — seção comentada esperando depoimentos reais.
   3. Pixel do Meta — slot comentado no <head>.
 -->
@@ -110,8 +109,9 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
       </p>
 
       <div class="video-wrap">
-        <!-- colocar a VSL em assets/vsl.mp4 — o placeholder abaixo aparece sozinho enquanto o arquivo não existe -->
-        <video id="vsl" src="assets/vsl.mp4" controls playsinline preload="metadata"></video>
+        <!-- VSL em assets/vsl.mp4 (720p30, faststart). O placeholder abaixo
+             so aparece se o arquivo sumir. -->
+        <video id="vsl" src="assets/vsl.mp4" poster="assets/vsl-poster.jpg" controls playsinline preload="metadata"></video>
         <div class="video-fallback" id="vslFallback" hidden>
           <i><svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5z"/></svg></i>
         </div>
