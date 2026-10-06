@@ -1,8 +1,11 @@
 <!doctype html>
 <!--
-  TRENCHOPS — LP curta (/lp-form/)
+  TRENCHOPS — LP sem VSL (/lp-form/)
 
-  Versão só com texto + formulário, sem VSL. Mesmo formulário e webhook da /lp/.
+  Estrutura de LP longa para contractors brasileiros nos EUA:
+  hero com formulário (sem VSL) → faixas cruzadas → depoimentos em vídeo →
+  prova (prints) → carta do fundador → mecanismo em 3 passos → FAQ → rodapé,
+  com pop-up de saída.
 
   Tudo que está entre [colchetes] ou marcado com TODO é placeholder.
   Está com noindex até o conteúdo final entrar.
@@ -199,6 +202,15 @@ fbq('init','937305316114895');fbq('track','PageView');
     /* no celular o formulário vem logo depois do texto, e os passos depois dele */
     .hero-form .copy{display:contents}.hero-form .copy>*{order:0}.hero-form .qform{order:1}.hero-form .steps-list{order:2;margin-top:0}
     .hero-form .form-grid{display:flex;flex-direction:column;gap:20px}}
+  .fit{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px;text-align:left}
+  .fit-col{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 24px}
+  .fit-col.yes{border-color:rgba(47,177,248,.35)}
+  .fit-col h3{font-size:18px;margin-bottom:14px}
+  .fit-col ul{list-style:none;margin:0;padding:0;display:grid;gap:12px;color:var(--muted);font-size:15px}
+  .fit-col li{display:flex;gap:10px}
+  .fit-col.yes li::before{content:"✓";color:var(--blue);font-weight:700}
+  .fit-col.no li::before{content:"✕";color:#ff6b6b;font-weight:700}
+  @media (max-width:860px){.fit{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -296,12 +308,134 @@ fbq('init','937305316114895');fbq('track','PageView');
   </div>
 </section>
 
+<!-- ============ FAIXAS CRUZADAS ============ -->
+<section class="xband" aria-hidden="true">
+  <div class="tk a"><div class="tk-track" data-loop>Anúncios <em>●</em> Site <em>●</em> CRM <em>●</em> Follow-up <em>●</em> Reviews <em>●</em></div></div>
+  <div class="tk b"><div class="tk-track" data-loop>Mais estimates <em>●</em> Menos lead frio <em>●</em> Agenda previsível <em>●</em></div></div>
+</section>
+
+<!-- ============ DEPOIMENTOS EM VÍDEO ============ -->
+<!-- Só depoimento REAL de cliente. Cada card: número na manchete + vídeo + nome/empresa.
+     Para o vídeo, trocar o texto do .frame por um <iframe>. -->
+<section id="videos">
+  <div class="wrap center">
+    <span class="eyebrow">Quem já está rodando</span>
+    <h2 class="h2">Contractors como você, <span class="accent">resultados reais</span></h2>
+    <div class="slider">
+      <article class="vcard"><div class="vh">[Resultado em números]</div><div class="frame">VÍDEO DEPOIMENTO<br>CLIENTE 1</div><div class="who"><strong>[Nome]</strong>[Empresa · cidade]</div></article>
+      <article class="vcard"><div class="vh">[Resultado em números]</div><div class="frame">VÍDEO DEPOIMENTO<br>CLIENTE 2</div><div class="who"><strong>[Nome]</strong>[Empresa · cidade]</div></article>
+      <article class="vcard"><div class="vh">[Resultado em números]</div><div class="frame">VÍDEO DEPOIMENTO<br>CLIENTE 3</div><div class="who"><strong>[Nome]</strong>[Empresa · cidade]</div></article>
+      <article class="vcard"><div class="vh">[Resultado em números]</div><div class="frame">VÍDEO DEPOIMENTO<br>CLIENTE 4</div><div class="who"><strong>[Nome]</strong>[Empresa · cidade]</div></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROVA: PRINTS ============ -->
+<section id="prova" style="background:var(--bg-alt)">
+  <div class="wrap center">
+    <span class="eyebrow">Sem filtro</span>
+    <h2 class="h2">O que os clientes mandam <span class="accent">no WhatsApp</span></h2>
+    <p class="lead">Prints reais de mensagens (com autorização). Trocar cada bloco por um &lt;img&gt;.</p>
+    <div class="proof-wall">
+      <div class="shot">PRINT 1</div><div class="shot">PRINT 2</div><div class="shot">PRINT 3</div>
+      <div class="shot">PRINT 4</div><div class="shot">PRINT 5</div><div class="shot">PRINT 6</div>
+    </div>
+    <a class="cta" href="#form" style="margin-top:24px">Quero resultados assim →</a>
+  </div>
+</section>
+
+<!-- ============ CARTA DO FUNDADOR ============ -->
+<!-- TODO: rascunho escrito por nós. Revisar e trocar pela história real do Davi. -->
+<section class="letter reveal">
+  <div class="paper">
+    <div class="date">Atualizado em <span id="today"></span></div>
+    <p class="hi">Fala, contractor.</p>
+    <p>Se você está lendo isso, provavelmente já viveu o mês em que o telefone não para e, logo depois, o mês em que ele não toca. A empresa vive de indicação, de cliente antigo e de sorte. E sorte não paga folha, carro e material.</p>
+    <p>Eu comecei a TrenchOps porque vi muito brasileiro bom de serviço aqui nos EUA perdendo trabalho para empresa pior, só porque a outra aparecia primeiro no Google e respondia mais rápido.</p>
+    <p>Já tentei o caminho que quase todo mundo tenta: pagar plataforma que vende o mesmo lead para cinco empresas, ou contratar alguém para "fazer uns posts". Não resolve. <strong>O problema não é uma peça, é o sistema inteiro</strong>: anúncio sem site bom não converte, site sem follow-up perde o cliente, e follow-up sem CRM vira bagunça no WhatsApp.</p>
+    <p>Então a gente monta tudo junto: o anúncio traz quem está procurando o seu serviço na sua região, o site transforma a visita em pedido de orçamento, e o CRM responde em minutos e faz o acompanhamento até o estimate virar contrato.</p>
+    <p><strong>Não é para todo mundo.</strong> Se você não tem como atender mais serviço, ou quer resultado sem responder cliente, não vai dar certo. Agora, se você entrega bem e só falta previsibilidade, preenche o formulário lá em cima. A gente analisa a sua região e te liga.</p>
+    <p>Um abraço,</p>
+    <div class="sig">
+      <div class="ph">D</div>
+      <div><strong>Davi</strong><span>Fundador · TrenchOps</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MECANISMO ============ -->
+<section id="mecanismo">
+  <div class="wrap center">
+    <span class="eyebrow">O método</span>
+    <h2 class="h2">Três peças, <span class="accent">um sistema só</span></h2>
+    <div class="mech">
+      <article class="reveal"><div class="n">01</div><h3>Atrair</h3><p>Anúncios no Meta e Google mirando quem está procurando o seu serviço na sua região.</p></article>
+      <article class="reveal"><div class="n">02</div><h3>Converter</h3><p>Site rápido, formulário certo e resposta automática em minutos, por SMS e e-mail.</p></article>
+      <article class="reveal"><div class="n">03</div><h3>Fechar</h3><p>CRM com follow-up, lembretes de estimate e pedido de review depois do serviço.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARA QUEM É ============ -->
+<section id="para-quem">
+  <div class="wrap center">
+    <span class="eyebrow">Antes de aplicar</span>
+    <h2 class="h2">A TrenchOps <span class="accent">é para você</span> se…</h2>
+    <div class="fit">
+      <div class="fit-col yes reveal">
+        <h3>É para você</h3>
+        <ul>
+          <li>Você já tem empresa rodando nos EUA e entrega serviço bem feito</li>
+          <li>Tem como atender mais orçamentos (ou quer contratar para isso)</li>
+          <li>Cansou de depender de indicação e de plataforma de lead</li>
+          <li>Responde cliente rápido quando o pedido chega</li>
+        </ul>
+      </div>
+      <div class="fit-col no reveal">
+        <h3>Não é para você</h3>
+        <ul>
+          <li>Está começando agora e ainda não tem como atender</li>
+          <li>Quer resultado sem investir em anúncio</li>
+          <li>Não tem tempo de ligar para quem pediu orçamento</li>
+          <li>Procura o mais barato, não o que dá retorno</li>
+        </ul>
+      </div>
+    </div>
+    <a class="cta" href="#form" style="margin-top:36px">Sou eu, quero aplicar →</a>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<!-- TODO: respostas em rascunho. Conferir prazos, verba e contrato antes de rodar tráfego. -->
+<section id="faq" style="background:var(--bg-alt)">
+  <div class="wrap narrow">
+    <div class="center"><span class="eyebrow">Dúvidas</span><h2 class="h2">Perguntas frequentes</h2></div>
+    <div class="faq">
+      <div class="faq-item"><button class="faq-q">Funciona para o meu tipo de serviço?<span>+</span></button><div class="faq-a"><p>Funciona para serviços em que o cliente pede orçamento antes de fechar: pavers, remodeling, flooring, roofing, cleaning, painting, landscaping e parecidos. Na reunião de diagnóstico a gente olha a demanda da sua região antes de qualquer compromisso.</p></div></div>
+      <div class="faq-item"><button class="faq-q">Quanto preciso investir em anúncio?<span>+</span></button><div class="faq-a"><p>Depende da sua região e do ticket do serviço. A verba de anúncio é paga direto para o Meta/Google, no seu cartão, e é separada da nossa mensalidade. Na reunião a gente te mostra uma faixa realista para a sua cidade.</p></div></div>
+      <div class="faq-item"><button class="faq-q">Tem fidelidade?<span>+</span></button><div class="faq-a"><p>[Confirmar a política de contrato antes de publicar.]</p></div></div>
+      <div class="faq-item"><button class="faq-q">Em quanto tempo começo a receber orçamentos?<span>+</span></button><div class="faq-a"><p>Os primeiros pedidos costumam chegar logo depois que os anúncios entram no ar. A previsibilidade de verdade vem nos meses seguintes, quando os anúncios já foram otimizados com dados da sua região.</p></div></div>
+      <div class="faq-item"><button class="faq-q">Eu não falo bem inglês. Tem problema?<span>+</span></button><div class="faq-a"><p>Não. O nosso time fala português com você, e todo o material que o seu cliente vê (anúncios, site, mensagens automáticas) sai em inglês.</p></div></div>
+    </div>
+    <div class="center" style="margin-top:40px"><a class="cta" href="#form">Quero aplicar →</a></div>
+  </div>
+</section>
+
 </main>
 
 <footer>
   <div class="wrap">© <span id="year"></span> TrenchOps · <a href="../privacidade/">Política de privacidade</a></div>
 </footer>
 
+<!-- ============ POP-UP DE SAÍDA ============ -->
+<div class="modal" id="exit" role="dialog" aria-modal="true" aria-labelledby="exit-t">
+  <div class="modal-box">
+    <button class="x" type="button" aria-label="Fechar">×</button>
+    <h3 id="exit-t">Antes de sair…</h3>
+    <p>São 3 perguntas e menos de 1 minuto para saber se a sua região ainda tem vaga.</p>
+    <button class="cta" type="button" id="exit-go">Ok, quero responder →</button>
+  </div>
+</div>
 
 <script>
 // Inbound Webhook do GHL (mesmo esquema da /cadastro/). Vazio = nenhum lead enviado.
@@ -310,6 +444,11 @@ const WEBHOOK_URL = '';
 const NEXT_PAGE = '../we-will-call-you/';
 
 document.getElementById('year').textContent = new Date().getFullYear();
+document.getElementById('today').textContent =
+  new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+// faixas: duplica o conteúdo para o loop não ter emenda
+document.querySelectorAll('[data-loop]').forEach((t) => { t.innerHTML += t.innerHTML + t.innerHTML + t.innerHTML; });
 
 // ---------- formulário em passos ----------
 (function () {
@@ -384,6 +523,23 @@ document.getElementById('year').textContent = new Date().getFullYear();
   });
 
   show(0);
+})();
+
+// ---------- FAQ ----------
+document.querySelectorAll('.faq-q').forEach((b) => b.addEventListener('click', () => b.parentElement.classList.toggle('open')));
+
+// ---------- pop-up de saída (uma vez por sessão) ----------
+(function () {
+  const m = document.getElementById('exit');
+  let shown = false;
+  try { shown = sessionStorage.getItem('to_exit') === '1'; } catch (_) {}
+  const open = () => { if (shown) return; shown = true; m.classList.add('on'); try { sessionStorage.setItem('to_exit', '1'); } catch (_) {} };
+  const close = () => m.classList.remove('on');
+  document.addEventListener('mouseleave', (e) => { if (e.clientY <= 0) open(); });
+  setTimeout(() => { if (window.matchMedia('(hover: none)').matches) open(); }, 45000);
+  m.querySelector('.x').addEventListener('click', close);
+  m.addEventListener('click', (e) => { if (e.target === m) close(); });
+  document.getElementById('exit-go').addEventListener('click', () => { close(); document.getElementById('form').scrollIntoView(); });
 })();
 
 // ---------- reveal ----------
