@@ -1,0 +1,501 @@
+<!doctype html>
+<!--
+  TRENCHOPS — VSL + formulário na mesma página (/drforms/)
+
+  Estrutura inspirada na página de VSL da Stryker Digital: headline com
+  marca-texto, vídeo logo abaixo, "ligue o som", e o formulário EMBUTIDO na
+  página (sem pop-up). Depois do formulário, o que entra no serviço.
+
+  OFERTA: a do relatório do Bodhi Gallo (call de 20/10/2026). Serviço mensal
+  completo, feito pela equipe; a página NÃO fala preço. A qualificação por
+  orçamento acontece no formulário e na call.
+
+  FLUXO: VSL (Vimeo) → formulário desta página → Inbound Webhook do GHL
+         → confirmação na própria página (sem redirect: a /we-will-call-you/
+           ainda fala do $297)
+
+  CHECKLIST:
+  1. Formulário PRÓPRIO, não o survey do GHL — o survey abre com "$297/mês"
+     no título. Campos = página 4 do relatório do Bodhi (nome, empresa,
+     telefone, orçamento, equipe). Envia achatado para WEBHOOK_URL (o mesmo
+     trigger que o quiz antigo da /cadastro/ usava). No workflow do GHL,
+     mapear os campos novos: budget, fit, service, city, sales_team.
+  2. VSL — Vimeo 1229012596, a mesma da /we-will-call-you/. Se o vídeo falar
+     do $297, gravar outro e trocar o id no src do iframe.
+  3. Pixel do Meta — mesmo da /cadastro/; dispara Lead no envio.
+  4. Prova social — COMENTADA no fim do <main>. Só descomentar com resultados
+     e depoimentos REAIS, com autorização do cliente.
+  5. noindex: é página de anúncio, não de busca.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Veja como funciona | Trenchops</title>
+<meta name="description" content="Site, Perfil no Google, avaliações e anúncios cuidados por uma equipe que fala português, para empresários brasileiros nos EUA.">
+<link rel="icon" type="image/svg+xml" href="../assets/logo-trenchops.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://player.vimeo.com">
+<link rel="preconnect" href="https://api.thetrenchops.com">
+
+<!-- PIXEL DO META (mesmo da /cadastro/) -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','937305316114895');fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=""></noscript>
+
+<style>
+  :root{
+    --ink:#14171c; --body:#3b3f47; --muted:#6b7079; --line:#e5e6e9;
+    --blue:#2FB1F8; --blue-2:#2453DB; --navy:#1b2b63;
+    --marker:#FFE99A;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);
+       -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img,svg{max-width:100%;display:block}
+
+  /* Marca-texto: a faixa fica no miolo da linha e não encosta nas linhas
+     de cima e de baixo. */
+  .hl{background-image:linear-gradient(var(--marker),var(--marker));background-repeat:no-repeat;
+      background-size:100% .92em;background-position:0 .24em;padding:0 6px;
+      -webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+  .page{min-height:100vh;padding:28px 16px 72px;display:flex;flex-direction:column;align-items:center}
+  @media(min-width:640px){.page{padding:40px 24px 96px}}
+
+  .logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:36px}
+  .logo svg{height:34px;width:auto}
+  .logo span{font-family:'Poppins',Arial,sans-serif;font-weight:600;font-size:19px;line-height:1;color:var(--navy)}
+
+  .hero{width:100%;max-width:860px;display:flex;flex-direction:column;align-items:center;gap:22px}
+  @media(min-width:640px){.hero{gap:28px}}
+  .eyebrow{margin:0;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+           color:var(--muted);text-align:center}
+  @media(min-width:640px){.eyebrow{font-size:14px}}
+  h1{margin:0;font-size:29px;line-height:1.3;font-weight:800;letter-spacing:-.02em;text-align:center;text-wrap:balance}
+  @media(min-width:640px){h1{font-size:44px;line-height:1.32}}
+  .hero-sub{margin:0;font-size:18px;line-height:1.5;color:var(--body);text-align:center;max-width:720px;text-wrap:pretty}
+  @media(min-width:640px){.hero-sub{font-size:22px}}
+
+  /* VSL */
+  .vsl{position:relative;width:100%;aspect-ratio:16/9;background:#0e1526;border-radius:2px;overflow:hidden;margin-top:6px}
+  .vsl iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  /* Ao terminar, o Vimeo mostra a grade de "mais vídeos do perfil". Esta capa
+     entra por cima no evento ended e esconde aquilo. */
+  .vsl-end{position:absolute;inset:0;display:none;flex-direction:column;gap:14px;align-items:center;
+           justify-content:center;background:#0e1526;color:#fff;text-align:center;padding:16px}
+  .vsl-end.on{display:flex}
+  .vsl-end p{margin:0;font-size:17px;font-weight:600}
+  .vsl-end a{color:#fff;font-weight:700;font-size:16px;text-decoration:none;background:var(--blue-2);
+             padding:12px 22px;border-radius:3px}
+  .vsl-end button{border:1px solid rgba(255,255,255,.35);border-radius:3px;background:transparent;
+                  color:#fff;font:600 14px/1 'Inter',Arial,sans-serif;padding:10px 16px;cursor:pointer}
+  .vsl-note{margin:0;font-size:16px;color:var(--body);text-align:center}
+  @media(min-width:640px){.vsl-note{font-size:18px}}
+
+  /* Formulário embutido */
+  .form-head{width:100%;max-width:640px;margin-top:22px;display:flex;flex-direction:column;gap:12px;align-items:center}
+  .form-head h2{margin:0;font-size:28px;line-height:1.18;font-weight:800;letter-spacing:-.015em;text-align:center;text-wrap:balance}
+  @media(min-width:640px){.form-head h2{font-size:36px}}
+  .form-head p{margin:0;font-size:17px;line-height:1.55;color:var(--body);text-align:center;text-wrap:pretty}
+  @media(min-width:640px){.form-head p{font-size:19px}}
+  .form-shell{width:100%;max-width:640px;scroll-margin-top:24px;border:1px solid var(--line);
+              border-top:3px solid var(--blue-2);border-radius:2px;background:#fff;padding:24px 18px}
+  @media(min-width:640px){.form-shell{padding:32px 32px 28px}}
+  .lf{display:flex;flex-direction:column;gap:20px}
+  .row2{display:grid;grid-template-columns:1fr;gap:20px}
+  @media(min-width:560px){.row2{grid-template-columns:1fr 1fr;gap:16px}}
+  .f{display:flex;flex-direction:column;gap:7px;min-width:0}
+  .f label,.f legend{font-size:15px;font-weight:700;color:var(--ink);padding:0}
+  .f .hint{font-weight:500;color:var(--muted)}
+  .f input[type=text],.f input[type=tel],.f input[type=email]{
+    width:100%;font:500 16px/1.3 'Inter',system-ui,sans-serif;color:var(--ink);background:#fff;
+    border:1px solid #cfd3da;border-radius:3px;padding:13px 12px}
+  .f input:focus{outline:2px solid var(--blue-2);outline-offset:-1px;border-color:var(--blue-2)}
+  fieldset.f{border:0;margin:0;padding:0}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .f .opt{display:flex;align-items:center;gap:10px;border:1px solid #cfd3da;border-radius:3px;padding:13px 12px;
+          font-size:15px;font-weight:500;cursor:pointer;background:#fff}
+  .f legend{margin-bottom:7px;line-height:1.4}
+  .opt input{margin:0;accent-color:var(--blue-2);width:17px;height:17px;flex:none}
+  .opt:has(input:checked){border-color:var(--blue-2);background:#f1f5ff}
+  .f.bad input[type=text],.f.bad input[type=tel],.f.bad input[type=email],.f.bad .opt{border-color:#c62828}
+  .err{display:none;font-size:13px;font-weight:600;color:#c62828;margin:0}
+  .f.bad .err{display:block}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .lf .cta{width:100%;border:0;cursor:pointer;font-family:inherit;margin-top:4px}
+  .lf .cta[disabled]{opacity:.7;cursor:default}
+  .fine{margin:0;font-size:13px;line-height:1.5;color:var(--muted);text-align:center}
+  .fine a{color:inherit}
+  .done{display:none;text-align:center;padding:12px 0}
+  .done h3{margin:0 0 10px;font-size:24px;font-weight:800;letter-spacing:-.01em}
+  .done p{margin:0;font-size:17px;line-height:1.55;color:var(--body)}
+  .form-shell.sent .lf{display:none}
+  .form-shell.sent .done{display:block}
+
+  /* O que entra no serviço */
+  .scope{width:100%;max-width:860px;margin-top:80px;padding-top:64px;border-top:1px solid var(--line);
+         display:flex;flex-direction:column;align-items:center;gap:36px}
+  .sec-head{display:flex;flex-direction:column;align-items:center;gap:12px;max-width:760px}
+  .sec-head h2{margin:0;font-size:28px;line-height:1.22;font-weight:800;letter-spacing:-.02em;text-align:center;text-wrap:balance}
+  @media(min-width:640px){.sec-head h2{font-size:40px}}
+  .sec-head p{margin:0;font-size:17px;line-height:1.55;color:var(--body);text-align:center;text-wrap:pretty}
+  .items{width:100%;margin:0;padding:0;list-style:none;border-top:1px solid var(--line)}
+  .items li{display:grid;grid-template-columns:1fr;gap:6px;padding:22px 0;border-bottom:1px solid var(--line)}
+  @media(min-width:720px){.items li{grid-template-columns:220px 1fr;gap:32px;padding:26px 0}}
+  .items h3{margin:0;font-size:19px;line-height:1.3;font-weight:800;letter-spacing:-.01em}
+  .items p{margin:0;font-size:17px;line-height:1.55;color:var(--body);text-wrap:pretty}
+  .honest{width:100%;margin:0;padding:22px 24px;background:#f6f7f9;border-left:3px solid var(--ink);border-radius:2px}
+  .honest h3{margin:0 0 8px;font-size:18px;font-weight:800}
+  .honest p{margin:0;font-size:17px;line-height:1.55;color:var(--body);text-wrap:pretty}
+
+  .cta{display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;
+       padding:18px 40px;border-radius:4px;text-decoration:none;text-align:center;
+       background:linear-gradient(180deg,#2A63EA 0%,var(--blue-2) 60%,#1d45bd 100%);
+       box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 1px 2px rgba(10,20,60,.2),0 8px 20px rgba(36,83,219,.28);
+       transition:transform .12s ease,box-shadow .12s ease}
+  .cta:hover,.cta:focus-visible{transform:translateY(-1px)}
+  .cta:active{transform:translateY(1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 2px 6px rgba(36,83,219,.25)}
+
+  /* Prova social (para quando houver resultados reais; ver checklist) */
+  .proof{width:100%;max-width:1120px;margin-top:80px;padding-top:64px;border-top:1px solid var(--line);
+         display:flex;flex-direction:column;align-items:center;gap:40px}
+  .proof-grid{width:100%;display:grid;grid-template-columns:1fr;gap:20px}
+  @media(min-width:860px){.proof-grid{grid-template-columns:repeat(3,1fr)}}
+  .card{border:1px solid var(--line);border-radius:3px;overflow:hidden;display:flex;flex-direction:column}
+  .card>img{width:100%;aspect-ratio:3/2;object-fit:cover}
+  .card-body{padding:22px 24px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .card-body h3{margin:0;font-size:22px;line-height:1.22;font-weight:800;letter-spacing:-.02em}
+  .metric{margin:0;font-size:17px;font-weight:700}
+  .quote{margin:0;font-size:16px;line-height:1.55;color:var(--body)}
+  .attrib{margin:auto 0 0;font-size:13px;font-weight:600;color:var(--muted)}
+
+  /* Rodapé */
+  .legal{width:100%;max-width:860px;margin-top:72px;padding-top:28px;border-top:1px solid var(--line);
+         text-align:center;font-size:13px;line-height:1.6;color:var(--muted)}
+  .legal p{margin:0 0 8px}
+  .legal a{color:inherit}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <a href="../cadastro/" class="logo" aria-label="Trenchops">
+    <svg viewBox="0 0 810 880" aria-hidden="true">
+      <defs>
+        <linearGradient id="tg" x1="810" y1="0" x2="0" y2="880" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#2FB1F8"/>
+          <stop offset="1" stop-color="#2453DB"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#tg)" d="M5,290 L405,5 L585,135 L585,75 L685,75 L685,200 L720,200 L720,232 L800,290 L800,355 L405,70 L5,355 Z"/>
+      <path fill="url(#tg)" d="M355,220h44v44h-44z M412,220h44v44h-44z M355,277h44v44h-44z M412,277h44v44h-44z"/>
+      <path fill="url(#tg)" d="M100,350 L390,350 L390,755 L407.5,800 L425,755 L425,350 L710,350 L710,445 L645,445 L645,480 L540,480 L540,790 L405,880 L270,790 L270,480 L100,480 Z"/>
+    </svg>
+    <span>Trenchops</span>
+  </a>
+
+  <main class="hero">
+    <p class="eyebrow">Para empresários brasileiros nos EUA</p>
+
+    <h1>Como empresários brasileiros nos EUA <span class="hl">param de depender só de indicação</span> para conseguir <span class="hl">clientes novos</span></h1>
+
+    <p class="hero-sub">Neste vídeo curto você vê o sistema que a Trench Ops monta e opera para o seu negócio: site, Perfil no Google, avaliações e anúncios trabalhando juntos, com uma equipe que fala português cuidando de tudo todo mês.</p>
+
+    <div class="vsl">
+      <!-- VSL no Vimeo. Autoplay mudo, por isso o "ligue o som" logo abaixo. -->
+      <iframe
+        src="https://player.vimeo.com/video/1229012596?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;dnt=1"
+        title="Como a Trench Ops trabalha"
+        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        loading="eager"></iframe>
+      <div class="vsl-end" id="vslEnd">
+        <p>Próximo passo: preencha o formulário abaixo.</p>
+        <a href="#book">Ir para o formulário</a>
+        <button type="button" id="replay">Assistir de novo</button>
+      </div>
+    </div>
+
+    <p class="vsl-note">Ligue o som. Assista até o fim antes de preencher.</p>
+
+    <div class="form-head">
+      <h2>Veja se o seu negócio se encaixa.</h2>
+      <p>Não é um site avulso nem uma ferramenta para você operar sozinho. A gente trabalha com empresas que querem a nossa equipe cuidando do site, do Perfil no Google, das avaliações e dos anúncios todo mês. Preencha e a gente entra em contato para marcar uma conversa.</p>
+    </div>
+
+    <div id="book" class="form-shell">
+      <form class="lf" id="lf" novalidate>
+        <div class="row2">
+          <div class="f" data-req="text">
+            <label for="f-name">Seu nome</label>
+            <input id="f-name" name="name" type="text" autocomplete="name">
+            <p class="err">Digite seu nome.</p>
+          </div>
+          <div class="f" data-req="text">
+            <label for="f-company">Nome da empresa</label>
+            <input id="f-company" name="company" type="text" autocomplete="organization">
+            <p class="err">Digite o nome da empresa.</p>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="f" data-req="phone">
+            <label for="f-phone">Celular (WhatsApp)</label>
+            <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 123-4567">
+            <p class="err">Digite um celular dos EUA com DDD.</p>
+          </div>
+          <div class="f" data-req="email">
+            <label for="f-email">E-mail</label>
+            <input id="f-email" name="email" type="email" autocomplete="email">
+            <p class="err">Digite um e-mail válido.</p>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="f" data-req="text">
+            <label for="f-service">Que serviço a sua empresa faz?</label>
+            <input id="f-service" name="service" type="text" placeholder="Ex.: remodeling, limpeza, pintura">
+            <p class="err">Conte que serviço você faz.</p>
+          </div>
+          <div class="f" data-req="text">
+            <label for="f-city">Cidade e estado onde atende</label>
+            <input id="f-city" name="city" type="text" placeholder="Ex.: Boston, MA">
+            <p class="err">Diga onde você atende.</p>
+          </div>
+        </div>
+        <fieldset class="f" data-req="radio">
+          <legend>Quanto você pode investir por mês no serviço? <span class="hint">A verba dos anúncios é à parte.</span></legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="budget" value="Menos de US$ 500">Menos de US$ 500</label>
+            <label class="opt"><input type="radio" name="budget" value="US$ 500 a US$ 1.000">Entre US$ 500 e US$ 1.000</label>
+            <label class="opt"><input type="radio" name="budget" value="US$ 1.000 ou mais">US$ 1.000 ou mais</label>
+          </div>
+          <p class="err">Escolha uma opção.</p>
+        </fieldset>
+        <fieldset class="f">
+          <legend>Quem atende os pedidos de orçamento hoje? <span class="hint">Opcional</span></legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="sales_team" value="Eu mesmo">Eu mesmo</label>
+            <label class="opt"><input type="radio" name="sales_team" value="Uma pessoa da equipe">Uma pessoa da equipe</label>
+            <label class="opt"><input type="radio" name="sales_team" value="Equipe de vendas">Uma equipe de vendas</label>
+          </div>
+        </fieldset>
+        <div class="hp" aria-hidden="true"><label>Fax <input id="f-fax" name="fax" type="text" tabindex="-1" autocomplete="off"></label></div>
+        <button class="cta" type="submit" id="f-go">Enviar</button>
+        <p class="fine">A gente usa esses dados só para falar com você sobre a Trench Ops. <a href="../privacidade/">Política de Privacidade</a></p>
+      </form>
+      <div class="done" role="status" aria-live="polite">
+        <h3>Recebemos, obrigado.</h3>
+        <p>Alguém da Trench Ops vai te chamar no WhatsApp para marcar uma conversa por vídeo. Fica de olho no celular.</p>
+      </div>
+    </div>
+  </main>
+
+  <section class="scope">
+    <div class="sec-head">
+      <p class="eyebrow">O serviço</p>
+      <h2>O que a Trench Ops faz <span class="hl">no seu negócio</span></h2>
+      <p>O escopo de cada empresa é combinado por escrito antes de começar. Em geral, entra isto:</p>
+    </div>
+
+    <ul class="items">
+      <li>
+        <h3>Site</h3>
+        <p>A gente ajusta ou monta o site com os serviços que você quer vender e as cidades que você atende, e testa formulário, botão de ligar e o aviso de cada pedido que chega.</p>
+      </li>
+      <li>
+        <h3>Perfil no Google</h3>
+        <p>Trabalho contínuo no seu Google Business Profile: categorias, serviços, áreas de atendimento, fotos e posts, para quem procura o seu serviço na região encontrar a sua empresa.</p>
+      </li>
+      <li>
+        <h3>Avaliações</h3>
+        <p>Um processo para pedir avaliação a cada serviço terminado e responder as que chegam. Se você não tem lista de clientes antigos, a gente começa a registrar os próximos jobs.</p>
+      </li>
+      <li>
+        <h3>Anúncios no Meta</h3>
+        <p>Quando faz sentido para o seu negócio e para o seu orçamento, a gente cria e gerencia as campanhas combinadas no Facebook e no Instagram. A verba dos anúncios é sua e fica separada do serviço.</p>
+      </li>
+      <li>
+        <h3>Acompanhamento</h3>
+        <p>Você vê o que foi feito e o que aconteceu com cada pedido de orçamento. Atendimento em português pelo WhatsApp, em horário combinado.</p>
+      </li>
+    </ul>
+
+    <div class="honest">
+      <h3>O que a gente não promete</h3>
+      <p>Ninguém controla o Google, então não garantimos posição nem número de clientes. O trabalho no Google leva tempo: a primeira revisão é em 90 dias, e o prazo muda conforme a sua cidade e o ponto de partida. As métricas que vamos acompanhar são combinadas antes de começar.</p>
+    </div>
+
+    <a class="cta" href="#book">Preencher o formulário</a>
+  </section>
+
+  <!-- ═══ PROVA SOCIAL — descomentar só com resultados e depoimentos REAIS,
+       com autorização do cliente. Formato da Stryker: 3 cards de cliente
+       (foto, empresa, número com marca-texto, frase, nome e cidade) e um CTA
+       que volta para o formulário. Fotos em ../assets/drforms/.
+
+  <section class="proof">
+    <div class="sec-head">
+      <p class="eyebrow">Clientes</p>
+      <h2>Empresários que já trabalham com a <span class="hl">Trench Ops</span></h2>
+    </div>
+    <div class="proof-grid">
+      <div class="card">
+        <img src="../assets/drforms/cliente-1.webp" width="600" height="400" loading="lazy" alt="[equipe do cliente 1]">
+        <div class="card-body">
+          <h3>[Empresa do cliente 1]</h3>
+          <p class="metric"><span class="hl">[número real, com período]</span></p>
+          <p class="quote">"[frase real do cliente]"</p>
+          <p class="attrib">[Nome], dono · [cidade, estado]</p>
+        </div>
+      </div>
+      (copiar o .card acima para os clientes 2 e 3)
+    </div>
+    <a class="cta" href="#book">Preencher o formulário</a>
+  </section>
+  ═══ FIM PROVA SOCIAL ═══ -->
+
+  <footer class="legal">
+    <p>&copy; Trenchops 2026 · Todos os direitos reservados</p>
+    <p><a href="../privacidade/">Política de Privacidade</a></p>
+  </footer>
+
+</div>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+/* Fim do vídeo: cobre a grade de "mais vídeos" do Vimeo com o próximo passo. */
+if (window.Vimeo) {
+  var player = new Vimeo.Player(document.querySelector(".vsl iframe"));
+  var fim = document.getElementById("vslEnd");
+  player.on("ended", function(){ fim.classList.add("on"); });
+  document.getElementById("replay").addEventListener("click", function(){
+    fim.classList.remove("on");
+    player.setCurrentTime(0).then(function(){ return player.play(); }).catch(function(){});
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   FORMULÁRIO → Inbound Webhook do GoHighLevel
+   Mesmo trigger que o quiz antigo da /cadastro/ usava. O payload vai
+   ACHATADO: no workflow cada campo aparece como
+   {{inboundWebhookRequest.campo}}.
+   "fit" faz o roteamento do relatório do Bodhi: "premium" vai para a
+   conversa de diagnóstico, "sistema" para o plano mais simples.
+   ════════════════════════════════════════════════════════════ */
+var WEBHOOK_URL = "https://services.leadconnectorhq.com/hooks/pLBD1TioRWvtJmmQut9n/webhook-trigger/27106d72-e349-4db2-ac84-943a786c3a9c";
+
+var form = document.getElementById("lf");
+var shell = document.getElementById("book");
+var phone = document.getElementById("f-phone");
+
+phone.addEventListener("input", function(){
+  var d = phone.value.replace(/\D/g, "");
+  if (d.length === 11 && d.charAt(0) === "1") d = d.slice(1);
+  d = d.slice(0, 10);
+  phone.value = d.length > 6 ? "(" + d.slice(0,3) + ") " + d.slice(3,6) + "-" + d.slice(6)
+              : d.length > 3 ? "(" + d.slice(0,3) + ") " + d.slice(3)
+              : d.length ? "(" + d : "";
+});
+
+// o GHL disca e deduplica melhor em E.164; o público é US, então +1
+function toE164(v){
+  var d = (v || "").replace(/\D/g, "");
+  if (d.length === 11 && d.charAt(0) === "1") return "+" + d;
+  if (d.length === 10) return "+1" + d;
+  return "";
+}
+
+function valido(box){
+  var tipo = box.dataset.req;
+  if (tipo === "radio") return !!box.querySelector("input:checked");
+  var v = box.querySelector("input").value.trim();
+  if (tipo === "phone") return !!toE164(v);
+  if (tipo === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  return v.length > 1;
+}
+
+// tira o erro assim que a pessoa corrige o campo
+form.addEventListener("input", function(e){
+  var box = e.target.closest("[data-req]");
+  if (box && box.classList.contains("bad") && valido(box)) box.classList.remove("bad");
+});
+
+var enviado = false;
+form.addEventListener("submit", function(e){
+  e.preventDefault();
+  if (enviado) return;
+
+  var primeiroRuim = null;
+  form.querySelectorAll("[data-req]").forEach(function(box){
+    var ok = valido(box);
+    box.classList.toggle("bad", !ok);
+    if (!ok && !primeiroRuim) primeiroRuim = box;
+  });
+  if (primeiroRuim){
+    primeiroRuim.scrollIntoView({block:"center", behavior:"smooth"});
+    var alvo = primeiroRuim.querySelector("input"); if (alvo) alvo.focus({preventScroll:true});
+    return;
+  }
+
+  enviado = true;
+  document.getElementById("f-go").disabled = true;
+
+  var fd = new FormData(form);
+  var val = function(k){ return (fd.get(k) || "").toString().trim(); };
+
+  if (val("fax")){ shell.classList.add("sent"); return; } // bot: finge que deu certo
+
+  var p = new URLSearchParams(location.search);
+  var nome = val("name").split(/\s+/);
+  var budget = val("budget");
+  var fit = budget === "Menos de US$ 500" ? "sistema" : "premium";
+  var lead = {
+    partial: false,
+    name: val("name"),
+    first_name: nome[0] || "",
+    last_name: nome.slice(1).join(" "),
+    phone: toE164(val("phone")),
+    phone_formatted: val("phone"),
+    email: val("email"),
+    company: val("company"),
+    service: val("service"),
+    city: val("city"),
+    budget: budget,
+    fit: fit,
+    sales_team: val("sales_team"),
+    resumo: [val("service"), val("city"), budget].filter(Boolean).join(" · "),
+    origem: "drforms",
+    utm_source: p.get("utm_source") || "",
+    utm_medium: p.get("utm_medium") || "",
+    utm_campaign: p.get("utm_campaign") || "",
+    utm_content: p.get("utm_content") || "",
+    fbclid: p.get("fbclid") || "",
+    page: location.href,
+    ts: new Date().toISOString()
+  };
+
+  fetch(WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"},
+                      body:JSON.stringify(lead), keepalive:true}).catch(function(){});
+  if (typeof fbq === "function") fbq("track", "Lead");
+
+  shell.classList.add("sent");
+  shell.scrollIntoView({block:"center", behavior:"smooth"});
+});
+</script>
+
+</body>
+</html>

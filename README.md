@@ -7,6 +7,7 @@ Site estático, sem build e sem dependência. Dois arquivos HTML + assets.
 | Arquivo | O que é |
 |---|---|
 | `cadastro/index.html` | **A LP** (`/cadastro/`). Landing de captação: headline + preço, preview com play, CTA verde. Clicar na foto ou no botão abre o **pop-up com quiz de 8 passos** (4 perguntas de qualificação → telefone → e-mail → nome → empresa). Ao enviar, redireciona para a página seguinte preservando os UTMs. |
+| `drforms/index.html` | **VSL + formulário** (`/drforms/`), inspirada na página de VSL da Stryker Digital. Oferta do relatório do Bodhi (20/10/2026): serviço mensal completo, **sem preço na página**. Formulário próprio (orçamento em faixas → `fit` premium/sistema) envia para o Inbound Webhook do GHL; confirmação na própria página. noindex. |
 | `privacidade/index.html` | Política de privacidade (`/privacidade/`), linkada no rodapé das duas páginas. **Descreve campo a campo o que o quiz envia — se o funil mudar, atualize aqui também.** |
 | `index.html` | Redirecionador da raiz → `/cadastro/`, preservando a querystring (UTMs). |
 | `lp/index.html` | **LP longa** (`/lp/`), em construção e com `noindex`: hero + VSL, formulário em 4 passos (envia para `WEBHOOK_URL` com o mesmo payload da `/cadastro/` e redireciona para `/we-will-call-you/`), faixas cruzadas, depoimentos em vídeo, prints, carta do fundador, método em 3 passos, FAQ e pop-up de saída. Os textos entre [colchetes] são placeholders. |
