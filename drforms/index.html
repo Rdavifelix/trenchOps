@@ -54,6 +54,7 @@ fbq('init','937305316114895');fbq('track','PageView');
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=""></noscript>
 
+<script>document.documentElement.classList.add("js")</script>
 <style>
   :root{
     --ink:#14171c; --body:#3b3f47; --muted:#6b7079; --line:#e5e6e9;
@@ -130,6 +131,22 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .done p{margin:0;font-size:17px;line-height:1.55;color:var(--body)}
   .form-shell.sent .lf{display:none}
   .form-shell.sent .done{display:block}
+
+  /* Pop-up do formulário. Com JS a página ganha a classe .js e o pop-up some
+     até alguém clicar; sem JS ele fica na página e o link #book rola até ele. */
+  .modal{width:100%;max-width:640px}
+  .js .modal{position:fixed;inset:0;z-index:50;max-width:none;display:none;overflow-y:auto;
+             overscroll-behavior:contain;background:rgba(10,14,22,.62);padding:16px 12px}
+  @media(min-width:640px){.js .modal{padding:48px 24px}}
+  .js .modal.open{display:block}
+  .modal-box{position:relative;width:100%;max-width:640px;margin:0 auto}
+  .js .modal-box{padding-top:44px}
+  .modal-close{display:none}
+  .js .modal-close{display:flex;position:absolute;top:0;right:0;width:38px;height:38px;align-items:center;
+                   justify-content:center;border:0;border-radius:2px;background:#fff;color:var(--ink);cursor:pointer}
+  .modal-close svg{width:20px;height:20px}
+  body.travado{overflow:hidden}
+  a.cta,button.cta{cursor:pointer}
 
   .cta{display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;
        padding:18px 40px;border-radius:4px;text-decoration:none;text-align:center;
@@ -233,10 +250,17 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
     <p class="hero-sub">O sistema que a Trench Ops monta e opera para o seu negócio: Perfil no Google, site e avaliações trabalhando juntos para você aparecer no Google Maps de quem procura o seu serviço, com uma equipe que fala português cuidando de tudo todo mês.</p>
 
     <div class="form-head">
-      <h2>Preencha para trabalhar conosco</h2>
+      <a class="cta" href="#book">Preencha para trabalhar conosco</a>
       <p>Isso NÃO É um setup único do perfil do Google. Apenas implementamos estratégias de Multi-Listing pra clientes full-service, em que cuidamos de toda a conta do Google Maps e dos leads interessados todos os meses.</p>
     </div>
 
+    <!-- Pop-up do formulário. Abre por qualquer link para #book (o botão do
+         topo e os CTAs dos resultados); sem JS, o link só rola até aqui. -->
+    <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Formulário Trench Ops">
+      <div class="modal-box">
+        <button type="button" class="modal-close" id="modalClose" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
     <div id="book" class="form-shell">
       <form class="lf" id="lf" novalidate>
         <div class="row2">
@@ -299,6 +323,8 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
       <div class="done" role="status" aria-live="polite">
         <h3>Recebemos, obrigado.</h3>
         <p>Alguém da Trench Ops vai te chamar no WhatsApp para marcar uma conversa por vídeo. Fica de olho no celular.</p>
+      </div>
+    </div>
       </div>
     </div>
   </main>
@@ -441,6 +467,21 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
    ════════════════════════════════════════════════════════════ */
 var WEBHOOK_URL = "https://services.leadconnectorhq.com/hooks/pLBD1TioRWvtJmmQut9n/webhook-trigger/27106d72-e349-4db2-ac84-943a786c3a9c";
 
+/* ── pop-up ── */
+var modal = document.getElementById("modal");
+function abrir(){
+  modal.classList.add("open"); document.body.classList.add("travado"); modal.scrollTop = 0;
+  if (window.matchMedia("(pointer:fine)").matches) document.getElementById("f-name").focus({preventScroll:true});
+}
+function fechar(){ modal.classList.remove("open"); document.body.classList.remove("travado"); }
+document.querySelectorAll('a[href="#book"]').forEach(function(a){
+  a.addEventListener("click", function(e){ e.preventDefault(); abrir(); });
+});
+document.getElementById("modalClose").addEventListener("click", fechar);
+modal.addEventListener("click", function(e){ if (e.target === modal) fechar(); });
+document.addEventListener("keydown", function(e){ if (e.key === "Escape" && modal.classList.contains("open")) fechar(); });
+if (location.hash === "#book") abrir();
+
 var form = document.getElementById("lf");
 var shell = document.getElementById("book");
 var phone = document.getElementById("f-phone");
@@ -536,7 +577,7 @@ form.addEventListener("submit", function(e){
   if (typeof fbq === "function") fbq("track", "Lead");
 
   shell.classList.add("sent");
-  shell.scrollIntoView({block:"center", behavior:"smooth"});
+  modal.scrollTop = 0;
 });
 </script>
 
