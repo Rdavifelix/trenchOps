@@ -3,14 +3,15 @@
   TRENCHOPS — VSL + formulário na mesma página (/drforms/)
 
   Estrutura inspirada na página de VSL da Stryker Digital: headline com
-  marca-texto, vídeo logo abaixo, "ligue o som", e o formulário EMBUTIDO na
-  página (sem pop-up). Depois do formulário, o que entra no serviço.
+  marca-texto e o formulário EMBUTIDO na página (sem pop-up), depois
+  resultados e avisos. A VSL foi tirada a pedido (21/10/2026); para voltar,
+  ver o commit anterior a "drforms: tira a VSL".
 
   OFERTA: a do relatório do Bodhi Gallo (call de 20/10/2026). Serviço mensal
   completo, feito pela equipe; a página NÃO fala preço. A qualificação por
   orçamento acontece no formulário e na call.
 
-  FLUXO: VSL (Vimeo) → formulário desta página → Inbound Webhook do GHL
+  FLUXO: formulário desta página (sem VSL por enquanto) → Inbound Webhook do GHL
          → confirmação na própria página (sem redirect: a /we-will-call-you/
            ainda fala do $297)
 
@@ -20,10 +21,8 @@
      telefone, orçamento, equipe). Envia achatado para WEBHOOK_URL (o mesmo
      trigger que o quiz antigo da /cadastro/ usava). No workflow do GHL,
      mapear os campos novos: budget, fit, service, city, sales_team.
-  2. VSL — Vimeo 1229012596, a mesma da /we-will-call-you/. Se o vídeo falar
-     do $297, gravar outro e trocar o id no src do iframe.
-  3. Pixel do Meta — mesmo da /cadastro/; dispara Lead no envio.
-  4. Resultados (3 cards + parede de 4 prints) e avisos legais seguem a
+  2. Pixel do Meta — mesmo da /cadastro/; dispara Lead no envio.
+  3. Resultados (3 cards + parede de 4 prints) e avisos legais seguem a
      estrutura da Stryker, sem os vídeos de depoimento. Textos provisórios
      têm a classe "ph" (contorno vermelho): NÃO publicar com nenhum "ph" na
      página — `grep -c 'ph"' drforms/index.html` tem que dar 0. Só material
@@ -41,7 +40,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://player.vimeo.com">
 <link rel="preconnect" href="https://api.thetrenchops.com">
 
 <!-- PIXEL DO META (mesmo da /cadastro/) -->
@@ -92,22 +90,6 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   @media(min-width:640px){h1{font-size:44px;line-height:1.32}}
   .hero-sub{margin:0;font-size:18px;line-height:1.5;color:var(--body);text-align:center;max-width:720px;text-wrap:pretty}
   @media(min-width:640px){.hero-sub{font-size:22px}}
-
-  /* VSL */
-  .vsl{position:relative;width:100%;aspect-ratio:16/9;background:#0e1526;border-radius:2px;overflow:hidden;margin-top:6px}
-  .vsl iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-  /* Ao terminar, o Vimeo mostra a grade de "mais vídeos do perfil". Esta capa
-     entra por cima no evento ended e esconde aquilo. */
-  .vsl-end{position:absolute;inset:0;display:none;flex-direction:column;gap:14px;align-items:center;
-           justify-content:center;background:#0e1526;color:#fff;text-align:center;padding:16px}
-  .vsl-end.on{display:flex}
-  .vsl-end p{margin:0;font-size:17px;font-weight:600}
-  .vsl-end a{color:#fff;font-weight:700;font-size:16px;text-decoration:none;background:var(--blue-2);
-             padding:12px 22px;border-radius:3px}
-  .vsl-end button{border:1px solid rgba(255,255,255,.35);border-radius:3px;background:transparent;
-                  color:#fff;font:600 14px/1 'Inter',Arial,sans-serif;padding:10px 16px;cursor:pointer}
-  .vsl-note{margin:0;font-size:16px;color:var(--body);text-align:center}
-  @media(min-width:640px){.vsl-note{font-size:18px}}
 
   /* Formulário embutido */
   .form-head{width:100%;max-width:640px;margin-top:22px;display:flex;flex-direction:column;gap:12px;align-items:center}
@@ -248,24 +230,7 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
 
     <h1>Como Home Service Owners fazem o <span class="hl">Google Maps</span> ser sua <span class="hl">Fonte #1 de ligações para Estimates</span></h1>
 
-    <p class="hero-sub">Neste vídeo curto você vê o sistema que a Trench Ops monta e opera para o seu negócio: site, Perfil no Google, avaliações e anúncios trabalhando juntos, com uma equipe que fala português cuidando de tudo todo mês.</p>
-
-    <div class="vsl">
-      <!-- VSL no Vimeo. Autoplay mudo, por isso o "ligue o som" logo abaixo. -->
-      <iframe
-        src="https://player.vimeo.com/video/1229012596?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1&amp;title=0&amp;byline=0&amp;portrait=0&amp;dnt=1"
-        title="Como a Trench Ops trabalha"
-        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
-        loading="eager"></iframe>
-      <div class="vsl-end" id="vslEnd">
-        <p>Próximo passo: preencha o formulário abaixo.</p>
-        <a href="#book">Ir para o formulário</a>
-        <button type="button" id="replay">Assistir de novo</button>
-      </div>
-    </div>
-
-    <p class="vsl-note">Ligue o som. Assista até o fim antes de preencher.</p>
+    <p class="hero-sub">O sistema que a Trench Ops monta e opera para o seu negócio: Perfil no Google, site e avaliações trabalhando juntos para você aparecer no Google Maps de quem procura o seu serviço, com uma equipe que fala português cuidando de tudo todo mês.</p>
 
     <div class="form-head">
       <h2>Preencha para trabalhar conosco</h2>
@@ -465,19 +430,7 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
 
 </div>
 
-<script src="https://player.vimeo.com/api/player.js"></script>
 <script>
-/* Fim do vídeo: cobre a grade de "mais vídeos" do Vimeo com o próximo passo. */
-if (window.Vimeo) {
-  var player = new Vimeo.Player(document.querySelector(".vsl iframe"));
-  var fim = document.getElementById("vslEnd");
-  player.on("ended", function(){ fim.classList.add("on"); });
-  document.getElementById("replay").addEventListener("click", function(){
-    fim.classList.remove("on");
-    player.setCurrentTime(0).then(function(){ return player.play(); }).catch(function(){});
-  });
-}
-
 /* ════════════════════════════════════════════════════════════
    FORMULÁRIO → Inbound Webhook do GoHighLevel
    Mesmo trigger que o quiz antigo da /cadastro/ usava. O payload vai
