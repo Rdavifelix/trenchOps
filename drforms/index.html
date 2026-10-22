@@ -18,7 +18,9 @@
   CHECKLIST:
   1. Formulário PRÓPRIO, não o survey do GHL — o survey abre com "$297/mês"
      no título. Campos = página 4 do relatório do Bodhi (nome, empresa,
-     telefone, orçamento, equipe). Envia achatado para WEBHOOK_URL (o mesmo
+     telefone, equipe) e, por último, a pergunta sim/não sobre investir
+     US$ 999/mês no marketing (campo budget; fit = premium/sistema).
+     Envia achatado para WEBHOOK_URL (o mesmo
      trigger que o quiz antigo da /cadastro/ usava). No workflow do GHL,
      mapear os campos novos: budget, fit, service, city, sales_team.
   2. Pixel do Meta — mesmo da /cadastro/; dispara Lead no envio.
@@ -299,15 +301,6 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
             <p class="err">Diga onde você atende.</p>
           </div>
         </div>
-        <fieldset class="f" data-req="radio">
-          <legend>Quanto você pode investir por mês no serviço? <span class="hint">A verba dos anúncios é à parte.</span></legend>
-          <div class="opts">
-            <label class="opt"><input type="radio" name="budget" value="Menos de US$ 500">Menos de US$ 500</label>
-            <label class="opt"><input type="radio" name="budget" value="US$ 500 a US$ 1.000">Entre US$ 500 e US$ 1.000</label>
-            <label class="opt"><input type="radio" name="budget" value="US$ 1.000 ou mais">US$ 1.000 ou mais</label>
-          </div>
-          <p class="err">Escolha uma opção.</p>
-        </fieldset>
         <fieldset class="f">
           <legend>Quem atende os pedidos de orçamento hoje? <span class="hint">Opcional</span></legend>
           <div class="opts">
@@ -315,6 +308,16 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
             <label class="opt"><input type="radio" name="sales_team" value="Uma pessoa da equipe">Uma pessoa da equipe</label>
             <label class="opt"><input type="radio" name="sales_team" value="Equipe de vendas">Uma equipe de vendas</label>
           </div>
+        </fieldset>
+        <!-- ÚLTIMA pergunta, de propósito: qualifica pelo investimento mensal
+             do serviço (US$ 999/mês). A verba dos anúncios é à parte. -->
+        <fieldset class="f" data-req="radio">
+          <legend>Você tem disponibilidade de investir <strong>US$ 999 por mês</strong> no marketing da sua empresa? <span class="hint">É o valor do serviço completo. A verba dos anúncios é à parte.</span></legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="budget" value="Sim, US$ 999/mês">Sim, tenho disponibilidade</label>
+            <label class="opt"><input type="radio" name="budget" value="Não agora">Não agora</label>
+          </div>
+          <p class="err">Escolha uma opção.</p>
         </fieldset>
         <div class="hp" aria-hidden="true"><label>Fax <input id="f-fax" name="fax" type="text" tabindex="-1" autocomplete="off"></label></div>
         <button class="cta" type="submit" id="f-go">Enviar</button>
@@ -527,7 +530,9 @@ form.addEventListener("submit", function(e){
   var p = new URLSearchParams(location.search);
   var nome = val("name").split(/\s+/);
   var budget = val("budget");
-  var fit = budget === "Menos de US$ 500" ? "sistema" : "premium";
+  // "premium": disse sim aos US$ 999/mês → conversa de diagnóstico.
+  // "sistema": não agora → nutrição / plano mais simples.
+  var fit = budget === "Sim, US$ 999/mês" ? "premium" : "sistema";
   var lead = {
     partial: false,
     name: val("name"),
