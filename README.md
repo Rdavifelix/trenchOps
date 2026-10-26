@@ -12,6 +12,7 @@ Site estático, sem build e sem dependência. Dois arquivos HTML + assets.
 | `index.html` | Redirecionador da raiz → `/cadastro/`, preservando a querystring (UTMs). |
 | `lp/index.html` | **LP longa** (`/lp/`), em construção e com `noindex`: hero + VSL, formulário em 4 passos (envia para `WEBHOOK_URL` com o mesmo payload da `/cadastro/` e redireciona para `/we-will-call-you/`), faixas cruzadas, depoimentos em vídeo, prints, carta do fundador, método em 3 passos, FAQ e pop-up de saída. Os textos entre [colchetes] são placeholders. |
 | `lp-form/index.html` | **LP sem VSL** (`/lp-form/`), com `noindex`: hero com texto + formulário na primeira dobra, depois as mesmas seções da `/lp/` mais "para quem é". Carta e FAQ em rascunho (revisar); depoimentos ainda são placeholders. Mesmo `WEBHOOK_URL` (constante própria no arquivo). |
+| `agencia/index.html` | **Página institucional** (`/agencia/`), com `noindex`: nav fixa, hero, fundadores, 2 serviços, resultados em vídeo, método em 4 fases + linha do tempo de 180 dias, time, comparação "outras agências × TrenchOps", FAQ e CTA final com o mesmo formulário em passos (mesmo `WEBHOOK_URL`). Números, fotos, depoimentos, contrato e preço são placeholders entre [colchetes]. |
 | `we-will-call-you/index.html` | **A pos-quiz** (`/we-will-call-you/`). Página pós-quiz: "assista ao vídeo, nossa equipe vai te ligar". Player da VSL com placeholder automático enquanto o vídeo não existe. |
 | `assets/logo-trenchops.svg` | Logo em vetor (ícone). |
 
