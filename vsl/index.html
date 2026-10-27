@@ -121,14 +121,16 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   @media(min-width:1100px){.fold h1{font-size:40px}}
   @media(min-width:760px) and (max-height:760px){.fold h1{font-size:32px}}
 
-  .vsl-area{width:100%;display:flex;align-items:center;justify-content:center}
+  /* margem do vídeo soma com o gap da dobra: respiro maior entre título, vídeo e botão */
+  .vsl-area{width:100%;display:flex;align-items:center;justify-content:center;margin:14px 0}
   @media(min-width:760px){
-    .vsl-area{flex:1 1 0;min-height:170px;container-type:size;max-height:calc(min(100vw - 48px, 960px) * 9 / 16)}
+    .vsl-area{flex:1 1 0;min-height:170px;container-type:size;max-height:calc(min(100vw - 48px, 960px) * 9 / 16);margin:20px 0}
     .vsl-area .vsl{width:min(100cqw, 100cqh * 16 / 9)}
   }
   /* celulares baixos (iPhone SE com as barras do Safari, apps com barra própria) */
   @media(max-width:759px) and (max-height:620px){
     .fold{gap:10px;padding-top:12px;padding-bottom:20px}
+    .vsl-area{margin:6px 0}
     .fold h1{font-size:22px;line-height:1.22}
     .logo svg{height:22px}.logo span{font-size:15px}
     .fold .cta{padding:15px 20px;font-size:17px}
