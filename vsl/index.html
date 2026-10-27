@@ -98,17 +98,14 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
      360×640; telas mais baixas ganham tudo um pouco menor).
      PC: a dobra tem a altura da tela. O vídeo (.vsl-area) cresce até ocupar
      o espaço que sobra depois do texto e do botão, mas nunca passa da altura
-     de um vídeo na largura cheia da coluna; o que sobrar vira respiro. */
+     de um vídeo na largura cheia da coluna; o que sobrar fica embaixo do botão.
+     Nos dois, o título vem logo abaixo do logo, sem centralizar na tela
+     (centralizado, ele caía para o meio da tela em celular alto). */
   .fold{display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 16px 32px}
   /* Celular: a dobra ocupa a tela inteira para o título da seção seguinte não
-     aparecer junto com o H1. O logo fica no topo e o resto se centraliza no
-     espaço que sobra. */
-  @media(max-width:759px){
-    .fold{min-height:100vh;min-height:100svh}
-    .fold .eyebrow{margin-top:auto}
-    .fold .cta{margin-bottom:auto}
-  }
-  @media(min-width:760px){.fold{height:100vh;height:100svh;min-height:540px;justify-content:center;gap:20px;padding:22px 24px 28px}}
+     aparecer junto com o H1. */
+  @media(max-width:759px){.fold{min-height:100vh;min-height:100svh}}
+  @media(min-width:760px){.fold{height:100vh;height:100svh;min-height:540px;gap:20px;padding:22px 24px 28px}}
 
   .logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex:none}
   .logo svg{height:26px;width:auto}
