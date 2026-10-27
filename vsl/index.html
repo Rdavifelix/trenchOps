@@ -19,8 +19,9 @@
   Texto provisório tem a classe "ph" (contorno vermelho): NÃO publicar com
   nenhum "ph" na página — `grep -c 'class="p[h]"' vsl/index.html` tem que dar 0.
 
-  FORMULÁRIO: o mesmo da /drforms/, em pop-up, para o mesmo workflow do GHL
-  ("Forms DR"). origem = "vsl" separa os leads desta página.
+  FORMULÁRIO: pop-up com uma pergunta por tela (modelo do formulário da
+  Stryker), para o mesmo workflow do GHL da /drforms/ ("Forms DR").
+  origem = "vsl" separa os leads desta página.
 -->
 <html lang="pt-BR">
 <head>
@@ -271,16 +272,17 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .step .q{margin:0;font-size:21px;line-height:1.3;font-weight:800;letter-spacing:-.01em;color:var(--ink);text-wrap:pretty}
   @media(min-width:640px){.step .q{font-size:24px}}
   .step .hint{margin:-6px 0 0;font-size:15px;line-height:1.45;color:var(--muted)}
-  .step input[type=text],.step input[type=tel]{width:100%;font:500 18px/1.3 'Inter',system-ui,sans-serif;color:var(--ink);background:#fff;
+  .step input[type=text],.step input[type=tel],.step input[type=email],.step textarea{width:100%;font:500 18px/1.3 'Inter',system-ui,sans-serif;color:var(--ink);background:#fff;
     border:1px solid #cfd3da;border-radius:3px;padding:15px 14px}
-  .step input:focus{outline:2px solid var(--blue-2);outline-offset:-1px;border-color:var(--blue-2)}
+  .step textarea{min-height:120px;resize:vertical}
+  .step input:focus,.step textarea:focus{outline:2px solid var(--blue-2);outline-offset:-1px;border-color:var(--blue-2)}
   .opts{display:flex;flex-direction:column;gap:8px}
-  .opt{display:flex;align-items:center;gap:12px;border:1px solid #cfd3da;border-radius:3px;padding:15px 14px;
+  .opt{display:flex;align-items:center;gap:12px;line-height:1.35;border:1px solid #cfd3da;border-radius:3px;padding:15px 14px;
        font-size:16px;font-weight:600;cursor:pointer;background:#fff}
   .opt:hover{border-color:#9aa6c4}
   .opt input{margin:0;accent-color:var(--blue-2);width:18px;height:18px;flex:none}
   .opt:has(input:checked){border-color:var(--blue-2);background:#f1f5ff}
-  .step.bad input[type=text],.step.bad input[type=tel],.step.bad .opt{border-color:#c62828}
+  .step.bad input[type=text],.step.bad input[type=tel],.step.bad input[type=email],.step.bad textarea,.step.bad .opt{border-color:#c62828}
   .err{display:none;font-size:14px;font-weight:600;color:#c62828;margin:0}
   .step.bad .err{display:block}
   .note{margin:0;font-size:14px;line-height:1.5;color:var(--body);background:var(--tint);border-left:3px solid #cfd3da;padding:10px 12px}
@@ -463,13 +465,11 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
           <h2 id="modalTitle">Preencha para trabalhar conosco</h2>
           <p>Isso NÃO É um setup único do perfil do Google. Apenas implementamos estratégias de Multi-Listing pra clientes full-service, em que cuidamos de toda a conta do Google Maps e dos leads interessados todos os meses.</p>
         </div>
-        <!-- Uma pergunta por tela. Campos = tabela de campos do relatório do
-             Bodhi: nome, empresa, telefone, US$ 999/mês (com o aviso da verba
-             de anúncios à parte), gasto recente com marketing e quem atende os
-             pedidos (esse não desqualifica ninguém). Todas obrigatórias
-             (pedido do Kauan em 26/10/2026). A pergunta
-             do dinheiro fica por último, de propósito. Envia uma vez só, no
-             fim (o workflow "Forms DR" não separa envio parcial). -->
+        <!-- Uma pergunta por tela, todas obrigatórias. Perguntas no modelo do
+             formulário da Stryker (enviadas pelo Kauan em 26/10/2026), com o
+             faturamento em faixas MENSAIS, a pergunta dos US$ 999/mês (mantida
+             a pedido) e o contato por último. Envia uma vez
+             só, no fim (o workflow "Forms DR" não separa envio parcial). -->
         <form class="lf" id="lf" novalidate>
           <div class="bar" id="bar" aria-hidden="true"></div>
           <div class="steps-top">
@@ -477,46 +477,68 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
             <p class="count" id="count" aria-live="polite"></p>
           </div>
 
-          <div class="step on" data-req="text">
-            <label class="q" for="f-name">Qual é o seu nome?</label>
-            <input id="f-name" name="name" type="text" autocomplete="name" enterkeyhint="next">
-            <p class="err">Digite seu nome.</p>
-            <button type="button" class="cta next">Continuar</button>
-          </div>
-
-          <div class="step" data-req="text">
-            <label class="q" for="f-company">Qual é o nome da sua empresa?</label>
-            <input id="f-company" name="company" type="text" autocomplete="organization" enterkeyhint="next">
-            <p class="err">Digite o nome da empresa.</p>
-            <button type="button" class="cta next">Continuar</button>
-          </div>
-
-          <div class="step" data-req="phone">
-            <label class="q" for="f-phone">Qual é o seu celular com WhatsApp?</label>
-            <p class="hint">Número dos EUA, com DDD.</p>
-            <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 123-4567" enterkeyhint="next">
-            <p class="err">Digite um celular dos EUA com DDD.</p>
-            <button type="button" class="cta next">Continuar</button>
-          </div>
-
-          <div class="step" data-req="radio">
-            <p class="q" id="q-spend">Em média, quanto você investiu por mês em marketing nos últimos 6 meses?</p>
-            <p class="hint">Agência, anúncios e site.</p>
-            <div class="opts" role="radiogroup" aria-labelledby="q-spend">
-              <label class="opt"><input type="radio" name="marketing_spend" value="Nada ainda">Nada ainda</label>
-              <label class="opt"><input type="radio" name="marketing_spend" value="Até US$ 500/mês">Até US$ 500</label>
-              <label class="opt"><input type="radio" name="marketing_spend" value="US$ 500 a 2.000/mês">De US$ 500 a US$ 2.000</label>
-              <label class="opt"><input type="radio" name="marketing_spend" value="Mais de US$ 2.000/mês">Mais de US$ 2.000</label>
+          <div class="step on" data-req="radio">
+            <p class="q" id="q-hs">Você tem ou administra uma empresa de Home Service hoje?</p>
+            <p class="hint">Só trabalhamos com serviços como telhado, HVAC, encanamento, controle de pragas e parecidos.</p>
+            <div class="opts" role="radiogroup" aria-labelledby="q-hs">
+              <label class="opt"><input type="radio" name="home_service" value="Sim">Sim</label>
+              <label class="opt"><input type="radio" name="home_service" value="Não">Não</label>
             </div>
             <p class="err">Escolha uma opção.</p>
           </div>
 
           <div class="step" data-req="radio">
-            <p class="q" id="q-team">Quem atende os pedidos de orçamento hoje?</p>
-            <div class="opts" role="radiogroup" aria-labelledby="q-team">
-              <label class="opt"><input type="radio" name="sales_team" value="Eu mesmo">Eu mesmo</label>
-              <label class="opt"><input type="radio" name="sales_team" value="Uma pessoa da equipe">Uma pessoa da equipe</label>
-              <label class="opt"><input type="radio" name="sales_team" value="Equipe de vendas">Uma equipe de vendas</label>
+            <p class="q" id="q-years">Há quanto tempo a sua empresa existe?</p>
+            <p class="hint">Isso ajuda a gente a indicar a estratégia certa. Uma empresa de 10 anos precisa de um plano diferente de uma que está começando.</p>
+            <div class="opts" role="radiogroup" aria-labelledby="q-years">
+              <label class="opt"><input type="radio" name="years_in_business" value="Menos de 1 ano">Menos de 1 ano</label>
+              <label class="opt"><input type="radio" name="years_in_business" value="1 a 3 anos">De 1 a 3 anos</label>
+              <label class="opt"><input type="radio" name="years_in_business" value="3 a 5 anos">De 3 a 5 anos</label>
+              <label class="opt"><input type="radio" name="years_in_business" value="Mais de 5 anos">Mais de 5 anos</label>
+            </div>
+            <p class="err">Escolha uma opção.</p>
+          </div>
+
+          <div class="step" data-req="radio">
+            <p class="q" id="q-spend">Mais ou menos quanto você investe em marketing por mês?</p>
+            <p class="hint">Isso mostra o que é realista, para a gente não sugerir um plano que precise de mais verba do que você quer gastar.</p>
+            <div class="opts" role="radiogroup" aria-labelledby="q-spend">
+              <label class="opt"><input type="radio" name="marketing_spend" value="Menos de US$ 1 mil/mês">Menos de US$ 1.000</label>
+              <label class="opt"><input type="radio" name="marketing_spend" value="US$ 1 a 3 mil/mês">De US$ 1.000 a US$ 3.000</label>
+              <label class="opt"><input type="radio" name="marketing_spend" value="US$ 3 a 6 mil/mês">De US$ 3.000 a US$ 6.000</label>
+              <label class="opt"><input type="radio" name="marketing_spend" value="US$ 6 a 10 mil/mês">De US$ 6.000 a US$ 10.000</label>
+              <label class="opt"><input type="radio" name="marketing_spend" value="Mais de US$ 10 mil/mês">Mais de US$ 10.000</label>
+            </div>
+            <p class="err">Escolha uma opção.</p>
+          </div>
+
+          <div class="step" data-req="long">
+            <label class="q" for="f-tried">O que você tentou nos últimos 12 meses para conseguir mais clientes, e como foi?</label>
+            <p class="hint">1 ou 2 frases bastam.</p>
+            <textarea id="f-tried" name="tried_last_12m" rows="4" placeholder="Escreva aqui"></textarea>
+            <p class="err">Conte em 1 ou 2 frases.</p>
+            <button type="button" class="cta next">Continuar</button>
+          </div>
+
+          <div class="step" data-req="radio">
+            <p class="q" id="q-look">O que descreve melhor o que você procura?</p>
+            <p class="hint"><strong>Atenção:</strong> só trabalhamos com empresas que procuram a primeira opção. Não fazemos serviço único.</p>
+            <div class="opts" role="radiogroup" aria-labelledby="q-look">
+              <label class="opt"><input type="radio" name="looking_for" value="Parceiro de longo prazo">Um parceiro de longo prazo para cuidar e fazer crescer o nosso Google Maps</label>
+              <label class="opt"><input type="radio" name="looking_for" value="Serviço único">Uma configuração única ou um ajuste rápido no Perfil no Google</label>
+            </div>
+            <p class="err">Escolha uma opção.</p>
+          </div>
+
+          <div class="step" data-req="radio">
+            <p class="q" id="q-rev">Qual faixa descreve melhor o faturamento mensal da sua empresa?</p>
+            <p class="hint">Fica só entre a gente. Usamos só para ajustar o plano ao tamanho da sua empresa.</p>
+            <div class="opts" role="radiogroup" aria-labelledby="q-rev">
+              <label class="opt"><input type="radio" name="monthly_revenue" value="Menos de US$ 10 mil/mês">Menos de US$ 10 mil por mês</label>
+              <label class="opt"><input type="radio" name="monthly_revenue" value="US$ 10 a 30 mil/mês">De US$ 10 mil a US$ 30 mil por mês</label>
+              <label class="opt"><input type="radio" name="monthly_revenue" value="US$ 30 a 50 mil/mês">De US$ 30 mil a US$ 50 mil por mês</label>
+              <label class="opt"><input type="radio" name="monthly_revenue" value="US$ 50 a 100 mil/mês">De US$ 50 mil a US$ 100 mil por mês</label>
+              <label class="opt"><input type="radio" name="monthly_revenue" value="Mais de US$ 100 mil/mês">Mais de US$ 100 mil por mês</label>
             </div>
             <p class="err">Escolha uma opção.</p>
           </div>
@@ -530,6 +552,27 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
             </div>
             <p class="note">Além do serviço, pode ser preciso uma verba para anúncios. Ela é paga à parte, direto ao Google e à Meta.</p>
             <p class="err">Escolha uma opção.</p>
+          </div>
+
+          <div class="step" data-req="text">
+            <label class="q" for="f-name">Qual é o seu nome?</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" enterkeyhint="next">
+            <p class="err">Digite seu nome.</p>
+            <button type="button" class="cta next">Continuar</button>
+          </div>
+
+          <div class="step" data-req="email">
+            <label class="q" for="f-email">Qual é o seu e-mail?</label>
+            <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" enterkeyhint="next">
+            <p class="err">Digite um e-mail válido.</p>
+            <button type="button" class="cta next">Continuar</button>
+          </div>
+
+          <div class="step" data-req="phone">
+            <label class="q" for="f-phone">Qual é o seu telefone com WhatsApp?</label>
+            <p class="hint">Número dos EUA, com DDD.</p>
+            <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 123-4567" enterkeyhint="send">
+            <p class="err">Digite um celular dos EUA com DDD.</p>
             <button class="cta" type="submit" id="f-go">Enviar</button>
             <p class="fine">A gente usa esses dados só para falar com você sobre a Trench Ops. <a href="../privacidade/">Política de Privacidade</a></p>
           </div>
@@ -571,6 +614,7 @@ var back = document.getElementById("back");
 var count = document.getElementById("count");
 var phone = document.getElementById("f-phone");
 var atual = 0;
+var CAMPOS = "input[type=text],input[type=tel],input[type=email],textarea";
 var enviado = false;
 
 bar.innerHTML = steps.map(function(){ return "<span></span>"; }).join("");
@@ -584,7 +628,7 @@ function mostrar(i, foco){
   back.hidden = i === 0;
   shell.classList.toggle("primeira", i === 0);
   modal.scrollTop = 0;
-  var campo = steps[i].querySelector("input[type=text],input[type=tel]");
+  var campo = steps[i].querySelector(CAMPOS);
   if (campo && foco) campo.focus({preventScroll:true});
 }
 
@@ -599,8 +643,10 @@ function toE164(v){
 function valido(step){
   var tipo = step.dataset.req;
   if (tipo === "radio") return !!step.querySelector("input:checked");
-  var v = step.querySelector("input").value.trim();
+  var v = step.querySelector("input,textarea").value.trim();
   if (tipo === "phone") return !!toE164(v);
+  if (tipo === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  if (tipo === "long") return v.length >= 10;
   return v.length > 1;
 }
 
@@ -609,7 +655,7 @@ function avancar(){
   var ok = valido(s);
   s.classList.toggle("bad", !ok);
   if (!ok){
-    var c = s.querySelector("input[type=text],input[type=tel]"); if (c) c.focus();
+    var c = s.querySelector(CAMPOS); if (c) c.focus();
     return;
   }
   if (atual < steps.length - 1) mostrar(atual + 1, true);
@@ -621,9 +667,9 @@ form.addEventListener("click", function(e){
 });
 back.addEventListener("click", function(){ if (atual > 0) mostrar(atual - 1, true); });
 
-// Enter nos campos de texto avança em vez de enviar
+// Enter nos campos de uma linha avança em vez de enviar (na resposta longa, Enter pula linha)
 form.addEventListener("keydown", function(e){
-  if (e.key === "Enter" && e.target.matches("input[type=text],input[type=tel]")){ e.preventDefault(); avancar(); }
+  if (e.key === "Enter" && e.target.matches("input[type=text],input[type=tel],input[type=email]")){ e.preventDefault(); avancar(); }
 });
 form.addEventListener("submit", function(e){ e.preventDefault(); avancar(); });
 
@@ -664,22 +710,28 @@ function enviar(){
   var p = new URLSearchParams(location.search);
   var nome = val("name").split(/\s+/);
   var budget = val("budget");
-  // "premium": disse sim aos US$ 999/mês → conversa de diagnóstico.
-  // "sistema": não agora → nutrição / plano mais simples.
-  var fit = budget === "Sim, US$ 999/mês" ? "premium" : "sistema";
+  // "premium": tem empresa de Home Service, quer parceiro de longo prazo e
+  // disse sim aos US$ 999/mês → conversa de diagnóstico.
+  // "sistema": o resto → nutrição / plano mais simples.
+  var fit = val("home_service") === "Sim" && val("looking_for") === "Parceiro de longo prazo" &&
+            budget === "Sim, US$ 999/mês" ? "premium" : "sistema";
   var lead = {
     partial: false,
     name: val("name"),
     first_name: nome[0] || "",
     last_name: nome.slice(1).join(" "),
+    email: val("email"),
     phone: toE164(val("phone")),
     phone_formatted: val("phone"),
-    company: val("company"),
+    home_service: val("home_service"),
+    years_in_business: val("years_in_business"),
+    marketing_spend: val("marketing_spend"),
+    tried_last_12m: val("tried_last_12m"),
+    looking_for: val("looking_for"),
+    monthly_revenue: val("monthly_revenue"),
     budget: budget,
     fit: fit,
-    marketing_spend: val("marketing_spend"),
-    sales_team: val("sales_team"),
-    resumo: [budget, val("marketing_spend"), val("sales_team")].filter(Boolean).join(" · "),
+    resumo: [budget, val("monthly_revenue"), val("marketing_spend"), val("years_in_business"), val("looking_for")].filter(Boolean).join(" · "),
     origem: "vsl",
     utm_source: p.get("utm_source") || "",
     utm_medium: p.get("utm_medium") || "",
