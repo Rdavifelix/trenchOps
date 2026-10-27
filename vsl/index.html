@@ -250,38 +250,53 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .modal-close svg{width:20px;height:20px}
   body.travado{overflow:hidden}
 
-  .form-shell{width:100%;scroll-margin-top:24px;border:1px solid var(--line);border-top:3px solid var(--blue-2);
-              border-radius:2px;background:#fff;padding:24px 18px}
-  @media(min-width:640px){.form-shell{padding:32px 32px 28px}}
-  .modal-head{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line)}
-  .modal-head h2{margin:0;font-size:24px;line-height:1.2;font-weight:800;letter-spacing:-.015em;text-align:center}
+  .form-shell{position:relative;width:100%;scroll-margin-top:24px;border:1px solid var(--line);border-radius:4px;
+              background:#fff;padding:36px 20px 28px;overflow:hidden}
+  @media(min-width:640px){.form-shell{padding:48px 44px 40px}}
+  .modal-head{display:flex;flex-direction:column;gap:10px;margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--line)}
+  .modal-head h2{margin:0;font-size:24px;line-height:1.2;font-weight:800;letter-spacing:-.015em}
+  .modal-head p{max-width:none;text-align:left}
   @media(min-width:640px){.modal-head h2{font-size:28px}}
-  /* Formulário em passos: uma pergunta por tela. A dica longa do topo só
-     aparece no primeiro passo. */
-  .form-shell:not(.primeira) .modal-head p{display:none}
+  /* Formulário em passos no layout da referência (barra contínua no topo,
+     "Voltar", pergunta com asterisco, opções com letra), na paleta da Trench.
+     O título e a dica do topo só aparecem no primeiro passo. */
+  .form-shell:not(.primeira) .modal-head{display:none}
   .lf{display:block}
-  .bar{display:flex;gap:4px}
-  .bar span{flex:1;height:4px;background:#e3e6ec}
-  .bar span.on{background:var(--blue-2)}
-  .steps-top{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:6px 0 14px}
-  .back{border:0;background:none;padding:6px 0;font:600 14px/1 'Inter',system-ui,sans-serif;color:var(--muted);cursor:pointer}
-  .back:hover{color:var(--ink)}
-  .count{margin:0 0 0 auto;font-size:13px;font-weight:600;color:var(--muted)}
+  .bar{position:absolute;top:0;left:0;right:0;height:6px;background:#dbe5fb}
+  .bar span{display:block;height:100%;width:0;background:var(--blue-2);transition:width .25s ease}
+  .back{display:inline-flex;align-items:center;margin:0 0 16px;border:0;background:none;padding:4px 0;
+        font:600 15px/1 'Inter',system-ui,sans-serif;color:var(--blue-2);cursor:pointer}
+  .back:hover{color:var(--blue-3)}
   .step{display:none;flex-direction:column;gap:14px}
   .step.on{display:flex}
-  .step .q{margin:0;font-size:21px;line-height:1.3;font-weight:800;letter-spacing:-.01em;color:var(--ink);text-wrap:pretty}
-  @media(min-width:640px){.step .q{font-size:24px}}
-  .step .hint{margin:-6px 0 0;font-size:15px;line-height:1.45;color:var(--muted)}
+  .step .q{margin:0;font-size:22px;line-height:1.3;font-weight:700;letter-spacing:-.015em;color:var(--ink);text-wrap:pretty}
+  @media(min-width:640px){.step .q{font-size:26px}}
+  /* asterisco de obrigatória */
+  .step .q::after{content:"*";margin-left:4px;color:var(--blue-2);font-size:.8em;line-height:0;vertical-align:super}
+  .step .hint{margin:-4px 0 8px;font-size:16px;line-height:1.5;color:var(--muted);text-wrap:pretty}
   .step input[type=text],.step input[type=tel],.step input[type=email],.step textarea{width:100%;font:500 18px/1.3 'Inter',system-ui,sans-serif;color:var(--ink);background:#fff;
-    border:1px solid #cfd3da;border-radius:3px;padding:15px 14px}
+    border:1px solid #c5d3f5;border-radius:4px;padding:15px 14px}
   .step textarea{min-height:120px;resize:vertical}
   .step input:focus,.step textarea:focus{outline:2px solid var(--blue-2);outline-offset:-1px;border-color:var(--blue-2)}
-  .opts{display:flex;flex-direction:column;gap:8px}
-  .opt{display:flex;align-items:center;gap:12px;line-height:1.35;border:1px solid #cfd3da;border-radius:3px;padding:15px 14px;
-       font-size:16px;font-weight:600;cursor:pointer;background:#fff}
-  .opt:hover{border-color:#9aa6c4}
-  .opt input{margin:0;accent-color:var(--blue-2);width:18px;height:18px;flex:none}
-  .opt:has(input:checked){border-color:var(--blue-2);background:#f1f5ff}
+  .opts{display:flex;flex-direction:column;gap:10px;counter-reset:opt}
+  .opt{position:relative;display:flex;align-items:center;gap:14px;line-height:1.35;border:1px solid #c5d3f5;border-radius:4px;
+       padding:11px 46px 11px 12px;font-size:16px;font-weight:500;color:var(--blue-3);background:#f0f4fe;cursor:pointer;
+       transition:background-color .12s ease,border-color .12s ease}
+  @media(min-width:640px){.opt{font-size:17px}}
+  /* letra da opção (A, B, C…) */
+  .opt::before{counter-increment:opt;content:counter(opt, upper-alpha);flex:none;width:28px;height:28px;display:flex;
+               align-items:center;justify-content:center;border:1px solid #b7c8f3;border-radius:3px;background:#fff;
+               color:var(--blue-2);font-size:13px;font-weight:700}
+  @media(hover:hover){.opt:hover{background:#e6edfd;border-color:#9fb6ef}}
+  .opt input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+  .opt:has(input:checked){background:#dbe5fb;border-color:var(--blue-2)}
+  .opt:has(input:checked)::before{background:var(--blue-2);border-color:var(--blue-2);color:#fff}
+  .opt:has(input:focus-visible){outline:2px solid var(--blue-2);outline-offset:2px}
+  /* ✓ da opção escolhida */
+  .opt::after{content:"";display:none;position:absolute;right:20px;top:50%;width:6px;height:12px;margin-top:-8px;
+              border:solid var(--blue-2);border-width:0 2px 2px 0;transform:rotate(45deg)}
+  .opt:has(input:checked)::after{display:block}
+  @media(prefers-reduced-motion:reduce){.bar span,.opt{transition:none}}
   .step.bad input[type=text],.step.bad input[type=tel],.step.bad input[type=email],.step.bad textarea,.step.bad .opt{border-color:#c62828}
   .err{display:none;font-size:14px;font-weight:600;color:#c62828;margin:0}
   .step.bad .err{display:block}
@@ -328,7 +343,7 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
     </div>
   </div>
 
-  <a class="cta" href="#book">Preencha para trabalhar conosco</a>
+  <a class="cta" href="#book">Toque aqui para trabalhar conosco</a>
 </header>
 
 <main>
@@ -471,11 +486,8 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
              a pedido) e o contato por último. Envia uma vez
              só, no fim (o workflow "Forms DR" não separa envio parcial). -->
         <form class="lf" id="lf" novalidate>
-          <div class="bar" id="bar" aria-hidden="true"></div>
-          <div class="steps-top">
-            <button type="button" class="back" id="back" hidden>&larr; Voltar</button>
-            <p class="count" id="count" aria-live="polite"></p>
-          </div>
+          <div class="bar" aria-hidden="true"><span id="bar"></span></div>
+          <button type="button" class="back" id="back" hidden>&larr; Voltar</button>
 
           <div class="step on" data-req="radio">
             <p class="q" id="q-hs">Você tem ou administra uma empresa de Home Service hoje?</p>
@@ -611,20 +623,16 @@ var shell = document.getElementById("book");
 var steps = [].slice.call(form.querySelectorAll(".step"));
 var bar = document.getElementById("bar");
 var back = document.getElementById("back");
-var count = document.getElementById("count");
 var phone = document.getElementById("f-phone");
 var atual = 0;
 var CAMPOS = "input[type=text],input[type=tel],input[type=email],textarea";
 var enviado = false;
 
-bar.innerHTML = steps.map(function(){ return "<span></span>"; }).join("");
-
 /* ── passos ── */
 function mostrar(i, foco){
   atual = i;
   steps.forEach(function(s, k){ s.classList.toggle("on", k === i); });
-  [].forEach.call(bar.children, function(b, k){ b.classList.toggle("on", k <= i); });
-  count.textContent = (i + 1) + " de " + steps.length;
+  bar.style.width = ((i + 1) / steps.length * 100) + "%";
   back.hidden = i === 0;
   shell.classList.toggle("primeira", i === 0);
   modal.scrollTop = 0;
@@ -749,6 +757,15 @@ function enviar(){
   shell.classList.add("sent");
   modal.scrollTop = 0;
 }
+
+// teclas A, B, C… escolhem a opção da tela atual, como na letra de cada opção
+document.addEventListener("keydown", function(e){
+  if (!modal.classList.contains("open") || enviado || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.matches(CAMPOS)) return;
+  var opcoes = steps[atual].querySelectorAll(".opt input");
+  var k = e.key.length === 1 ? e.key.toUpperCase().charCodeAt(0) - 65 : -1;
+  if (k >= 0 && k < opcoes.length){ e.preventDefault(); opcoes[k].click(); }
+});
 
 /* ── pop-up ── */
 function abrir(){
