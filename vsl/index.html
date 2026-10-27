@@ -21,7 +21,8 @@
 
   FORMULÁRIO: pop-up com uma pergunta por tela (modelo do formulário da
   Stryker), para o mesmo workflow do GHL da /drforms/ ("Forms DR").
-  origem = "vsl" separa os leads desta página.
+  origem = "vsl" separa os leads desta página. Depois do envio vai para
+  /vsl/obrigado/ (próximos passos + botão "Furar fila" no WhatsApp).
 -->
 <html lang="pt-BR">
 <head>
@@ -740,12 +741,21 @@ function enviar(){
     ts: new Date().toISOString()
   };
 
-  fetch(WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"},
-                      body:JSON.stringify(lead), keepalive:true}).catch(function(){});
+  var envio = fetch(WEBHOOK_URL, {method:"POST", headers:{"Content-Type":"application/json"},
+                                  body:JSON.stringify(lead), keepalive:true}).catch(function(){});
   if (typeof fbq === "function") fbq("track", "Lead");
 
   shell.classList.add("sent");
   modal.scrollTop = 0;
+
+  // vai para a página de obrigado com as UTMs; o primeiro nome segue pelo
+  // sessionStorage (não pela URL). Espera o webhook responder, no máximo 1,5 s:
+  // o keepalive garante o envio, a espera dá tempo do pixel registrar o Lead.
+  try { sessionStorage.setItem("to_nome", nome[0] || ""); } catch (e) {}
+  var foi = false;
+  var ir = function(){ if (!foi){ foi = true; location.href = "obrigado/" + location.search; } };
+  envio.then(function(){ setTimeout(ir, 300); });
+  setTimeout(ir, 1500);
 }
 
 // teclas A, B, C… escolhem a opção da tela atual, como na letra de cada opção

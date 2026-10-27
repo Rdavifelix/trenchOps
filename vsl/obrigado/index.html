@@ -1,0 +1,174 @@
+<!doctype html>
+<!--
+  TRENCHOPS — página de obrigado da VSL (/vsl/obrigado/)
+
+  O formulário da /vsl/ manda o lead para o GHL e redireciona para cá,
+  levando a querystring (UTMs). O primeiro nome vem pelo sessionStorage
+  ("to_nome"), não pela URL, para não deixar dado pessoal em link.
+
+  FURAR FILA: abre o WhatsApp oficial da Trench Ops, +1 (607) 454-1762 (o
+  mesmo da política de privacidade e do contrato), com mensagem pronta.
+  Dispara o evento Contact do pixel. O Lead já foi disparado na /vsl/.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Recebemos suas respostas | Trenchops</title>
+<link rel="icon" type="image/svg+xml" href="../../assets/logo-trenchops.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+<!-- PIXEL DO META (mesmo da /vsl/) -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','937305316114895');fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=""></noscript>
+
+<style>
+  :root{
+    --ink:#14171c; --body:#3b3f47; --muted:#6b7079; --line:#e5e6e9;
+    --blue-2:#2453DB; --navy:#1b2b63; --marker:#FFE99A; --tint:#f5f6f8;
+    --green:#16a34a; --green-2:#12873d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:'Inter',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);
+       -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img,svg{max-width:100%;display:block}
+
+  .hl{background-image:linear-gradient(var(--marker),var(--marker));background-repeat:no-repeat;
+      background-size:100% .92em;background-position:0 .24em;padding:0 6px;
+      -webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+  .page{max-width:680px;margin:0 auto;padding:22px 16px 56px}
+  @media(min-width:760px){.page{padding:40px 24px 80px}}
+
+  .logo{display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;margin-bottom:36px}
+  .logo svg{height:28px;width:auto}
+  .logo span{font-family:'Poppins',Arial,sans-serif;font-weight:600;font-size:17px;line-height:1;color:var(--navy)}
+  @media(min-width:760px){.logo{margin-bottom:56px}.logo svg{height:32px}.logo span{font-size:19px}}
+
+  .ok{margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green-2);text-align:center}
+  h1{margin:0;font-size:30px;line-height:1.2;font-weight:800;letter-spacing:-.02em;text-align:center;text-wrap:balance}
+  @media(min-width:760px){h1{font-size:42px}}
+  .lead{margin:16px auto 0;max-width:560px;font-size:18px;line-height:1.55;color:var(--body);text-align:center;text-wrap:pretty}
+  @media(min-width:760px){.lead{font-size:20px}}
+
+  /* Furar fila */
+  .fila{margin:32px 0 0;padding:22px 18px;border:1px solid #bfe5cc;border-radius:4px;background:#f1faf4;
+        display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+  @media(min-width:760px){.fila{margin-top:40px;padding:28px 32px}}
+  .fila h2{margin:0;font-size:20px;line-height:1.3;font-weight:800;letter-spacing:-.01em}
+  .fila p{margin:0;font-size:15px;line-height:1.5;color:var(--body);max-width:440px}
+  .zap{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:400px;
+       padding:18px 24px;border-radius:3px;background:var(--green);color:#fff;font-size:19px;font-weight:800;
+       text-decoration:none;transition:background-color .15s ease}
+  .zap:hover{background:var(--green-2)}
+  .zap:focus-visible{outline:3px solid rgba(22,163,74,.4);outline-offset:3px}
+  .zap svg{width:22px;height:22px;flex:none}
+  @media(prefers-reduced-motion:reduce){.zap{transition:none}}
+
+  /* Próximos passos: mesmos marcadores da /vsl/ */
+  .next{margin-top:48px}
+  @media(min-width:760px){.next{margin-top:64px}}
+  .next h2{margin:0 0 28px;font-size:24px;line-height:1.25;font-weight:800;letter-spacing:-.015em;text-align:center}
+  @media(min-width:760px){.next h2{font-size:30px}}
+  .steps{list-style:none;margin:0;padding:0}
+  .steps li{position:relative;display:grid;grid-template-columns:40px 1fr;column-gap:18px;padding-bottom:28px}
+  .steps li:last-child{padding-bottom:0}
+  .steps li:not(:last-child)::before{content:"";position:absolute;left:19px;top:40px;bottom:0;width:2px;background:#cfdaf7}
+  .num{grid-row:1 / span 2;width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+       border-radius:3px;background:var(--blue-2);color:#fff;font-size:17px;font-weight:800;position:relative;z-index:1}
+  .steps h3{margin:8px 0 6px;font-size:19px;line-height:1.25;font-weight:800;letter-spacing:-.01em}
+  .steps p{margin:0;font-size:16px;line-height:1.55;color:var(--body);text-wrap:pretty}
+
+  .legal{margin-top:64px;padding-top:22px;border-top:1px solid #ececee;text-align:center}
+  .legal p{margin:0;font-size:12px;line-height:1.6;color:#8b8e95}
+  .legal a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a href="../" class="logo" aria-label="Trenchops">
+    <svg viewBox="0 0 810 880" aria-hidden="true">
+      <defs>
+        <linearGradient id="tg" x1="810" y1="0" x2="0" y2="880" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#2FB1F8"/>
+          <stop offset="1" stop-color="#2453DB"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#tg)" d="M5,290 L405,5 L585,135 L585,75 L685,75 L685,200 L720,200 L720,232 L800,290 L800,355 L405,70 L5,355 Z"/>
+      <path fill="url(#tg)" d="M355,220h44v44h-44z M412,220h44v44h-44z M355,277h44v44h-44z M412,277h44v44h-44z"/>
+      <path fill="url(#tg)" d="M100,350 L390,350 L390,755 L407.5,800 L425,755 L425,350 L710,350 L710,445 L645,445 L645,480 L540,480 L540,790 L405,880 L270,790 L270,480 L100,480 Z"/>
+    </svg>
+    <span>Trenchops</span>
+  </a>
+
+  <main>
+    <p class="ok">Formulário recebido</p>
+    <h1>Recebemos suas respostas<span id="nome"></span>. <span class="hl">Agora é com a gente.</span></h1>
+    <p class="lead">Alguém da equipe da Trench Ops vai te ligar no número que você deixou para marcar uma conversa por vídeo.</p>
+
+    <section class="fila">
+      <h2>Não quer esperar a ligação?</h2>
+      <a class="zap" id="zap" href="https://wa.me/16074541762?text=Oi!%20Acabei%20de%20preencher%20o%20formul%C3%A1rio%20da%20Trench%20Ops%20e%20quero%20furar%20a%20fila." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2Zm5.8 14.06c-.24.68-1.42 1.3-1.95 1.34-.5.05-.97.23-3.27-.68-2.77-1.09-4.52-3.92-4.66-4.1-.13-.18-1.11-1.48-1.11-2.82s.7-2 .95-2.27c.25-.27.54-.34.72-.34.18 0 .36 0 .52.01.17.01.39-.06.61.47.23.54.77 1.88.84 2.02.07.14.11.29.02.47-.09.18-.14.29-.27.45-.14.16-.29.35-.41.47-.14.14-.28.29-.12.56.16.27.71 1.17 1.52 1.89 1.04.93 1.92 1.22 2.19 1.35.27.14.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.23.61-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.11.07.65-.17 1.32Z"/></svg>
+        Furar fila
+      </a>
+      <p>Abre direto uma conversa com a equipe no WhatsApp da Trench Ops.</p>
+    </section>
+
+    <section class="next">
+      <h2>Próximos passos</h2>
+      <ol class="steps">
+        <li>
+          <span class="num">1</span>
+          <h3>A gente te liga</h3>
+          <p>Alguém da equipe liga no número que você deixou. Fique de olho no celular, inclusive em número que você não conhece.</p>
+        </li>
+        <li>
+          <span class="num">2</span>
+          <h3>Marcamos a conversa por vídeo</h3>
+          <p>Na ligação, a gente combina com você o melhor dia e horário.</p>
+        </li>
+        <li>
+          <span class="num">3</span>
+          <h3>Olhamos o seu Google Maps com você</h3>
+          <p>Na conversa, a gente olha o seu Perfil no Google, a sua região e a concorrência, e diz se dá para trabalhar juntos.</p>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="legal">
+    <p>&copy; Trenchops 2026 &middot; <a href="../../privacidade/">Política de Privacidade</a></p>
+  </footer>
+</div>
+
+<script>
+// primeiro nome que a /vsl/ guardou ao enviar o formulário
+var nome = "";
+try { nome = (sessionStorage.getItem("to_nome") || "").trim(); } catch (e) {}
+if (nome) {
+  document.getElementById("nome").textContent = ", " + nome;
+  document.getElementById("zap").href = "https://wa.me/16074541762?text=" +
+    encodeURIComponent("Oi! Sou " + nome + ", acabei de preencher o formulário da Trench Ops e quero furar a fila.");
+}
+document.getElementById("zap").addEventListener("click", function(){
+  if (typeof fbq === "function") fbq("track", "Contact");
+});
+</script>
+
+</body>
+</html>
