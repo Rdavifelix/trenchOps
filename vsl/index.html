@@ -524,11 +524,10 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
             <p class="err">Escolha uma opção.</p>
           </div>
 
-          <div class="step" data-req="long">
+          <div class="step" data-req="text">
             <label class="q" for="f-tried">O que você tentou nos últimos 12 meses para conseguir mais clientes, e como foi?</label>
-            <p class="hint">1 ou 2 frases bastam.</p>
             <textarea id="f-tried" name="tried_last_12m" rows="4" placeholder="Escreva aqui"></textarea>
-            <p class="err">Conte em 1 ou 2 frases.</p>
+            <p class="err">Escreva sua resposta.</p>
             <button type="button" class="cta next">Continuar</button>
           </div>
 
@@ -654,7 +653,6 @@ function valido(step){
   var v = step.querySelector("input,textarea").value.trim();
   if (tipo === "phone") return !!toE164(v);
   if (tipo === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-  if (tipo === "long") return v.length >= 10;
   return v.length > 1;
 }
 
