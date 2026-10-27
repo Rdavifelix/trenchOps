@@ -736,6 +736,7 @@ function enviar(){
     utm_medium: p.get("utm_medium") || "",
     utm_campaign: p.get("utm_campaign") || "",
     utm_content: p.get("utm_content") || "",
+    utm_term: p.get("utm_term") || "",
     fbclid: p.get("fbclid") || "",
     page: location.href,
     ts: new Date().toISOString()
@@ -768,9 +769,13 @@ document.addEventListener("keydown", function(e){
 });
 
 /* ── pop-up ── */
+var abriuForm = false;
 function abrir(){
   modal.classList.add("open"); document.body.classList.add("travado");
   if (!enviado) mostrar(atual, window.matchMedia("(pointer:fine)").matches);
+  // pixel: a primeira abertura do formulário (o Lead sai no envio)
+  if (!abriuForm && typeof fbq === "function") fbq("trackCustom", "FormularioAberto");
+  abriuForm = true;
 }
 function fechar(){ modal.classList.remove("open"); document.body.classList.remove("travado"); }
 document.querySelectorAll('a[href="#book"]').forEach(function(a){
