@@ -255,26 +255,38 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .modal-head{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line)}
   .modal-head h2{margin:0;font-size:24px;line-height:1.2;font-weight:800;letter-spacing:-.015em;text-align:center}
   @media(min-width:640px){.modal-head h2{font-size:28px}}
-  .lf{display:flex;flex-direction:column;gap:20px}
-  .row2{display:grid;grid-template-columns:1fr;gap:20px}
-  @media(min-width:560px){.row2{grid-template-columns:1fr 1fr;gap:16px}}
-  .f{display:flex;flex-direction:column;gap:7px;min-width:0}
-  .f label,.f legend{font-size:15px;font-weight:700;color:var(--ink);padding:0}
-  .f .hint{font-weight:500;color:var(--muted)}
-  .f input[type=text],.f input[type=tel],.f input[type=email]{
-    width:100%;font:500 16px/1.3 'Inter',system-ui,sans-serif;color:var(--ink);background:#fff;
-    border:1px solid #cfd3da;border-radius:3px;padding:13px 12px}
-  .f input:focus{outline:2px solid var(--blue-2);outline-offset:-1px;border-color:var(--blue-2)}
-  fieldset.f{border:0;margin:0;padding:0}
+  /* Formulário em passos: uma pergunta por tela. A dica longa do topo só
+     aparece no primeiro passo. */
+  .form-shell:not(.primeira) .modal-head p{display:none}
+  .lf{display:block}
+  .bar{display:flex;gap:4px}
+  .bar span{flex:1;height:4px;background:#e3e6ec}
+  .bar span.on{background:var(--blue-2)}
+  .steps-top{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin:6px 0 14px}
+  .back{border:0;background:none;padding:6px 0;font:600 14px/1 'Inter',system-ui,sans-serif;color:var(--muted);cursor:pointer}
+  .back:hover{color:var(--ink)}
+  .count{margin:0 0 0 auto;font-size:13px;font-weight:600;color:var(--muted)}
+  .step{display:none;flex-direction:column;gap:14px}
+  .step.on{display:flex}
+  .step .q{margin:0;font-size:21px;line-height:1.3;font-weight:800;letter-spacing:-.01em;color:var(--ink);text-wrap:pretty}
+  @media(min-width:640px){.step .q{font-size:24px}}
+  .step .hint{margin:-6px 0 0;font-size:15px;line-height:1.45;color:var(--muted)}
+  .step input[type=text],.step input[type=tel]{width:100%;font:500 18px/1.3 'Inter',system-ui,sans-serif;color:var(--ink);background:#fff;
+    border:1px solid #cfd3da;border-radius:3px;padding:15px 14px}
+  .step input:focus{outline:2px solid var(--blue-2);outline-offset:-1px;border-color:var(--blue-2)}
   .opts{display:flex;flex-direction:column;gap:8px}
-  .f .opt{display:flex;align-items:center;gap:10px;border:1px solid #cfd3da;border-radius:3px;padding:13px 12px;
-          font-size:15px;font-weight:500;cursor:pointer;background:#fff}
-  .f legend{margin-bottom:7px;line-height:1.4}
-  .opt input{margin:0;accent-color:var(--blue-2);width:17px;height:17px;flex:none}
+  .opt{display:flex;align-items:center;gap:12px;border:1px solid #cfd3da;border-radius:3px;padding:15px 14px;
+       font-size:16px;font-weight:600;cursor:pointer;background:#fff}
+  .opt:hover{border-color:#9aa6c4}
+  .opt input{margin:0;accent-color:var(--blue-2);width:18px;height:18px;flex:none}
   .opt:has(input:checked){border-color:var(--blue-2);background:#f1f5ff}
-  .f.bad input[type=text],.f.bad input[type=tel],.f.bad input[type=email],.f.bad .opt{border-color:#c62828}
-  .err{display:none;font-size:13px;font-weight:600;color:#c62828;margin:0}
-  .f.bad .err{display:block}
+  .step.bad input[type=text],.step.bad input[type=tel],.step.bad .opt{border-color:#c62828}
+  .err{display:none;font-size:14px;font-weight:600;color:#c62828;margin:0}
+  .step.bad .err{display:block}
+  .note{margin:0;font-size:14px;line-height:1.5;color:var(--body);background:var(--tint);border-left:3px solid #cfd3da;padding:10px 12px}
+  .skip{align-self:center;border:0;background:none;padding:8px;font:600 15px/1 'Inter',system-ui,sans-serif;color:var(--muted);
+        text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .skip:hover{color:var(--ink)}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
   .lf .cta{width:100%;max-width:none;margin-top:4px}
   .lf .cta[disabled]{opacity:.7;cursor:default}
@@ -454,64 +466,78 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
           <h2 id="modalTitle">Preencha para trabalhar conosco</h2>
           <p>Isso NÃO É um setup único do perfil do Google. Apenas implementamos estratégias de Multi-Listing pra clientes full-service, em que cuidamos de toda a conta do Google Maps e dos leads interessados todos os meses.</p>
         </div>
+        <!-- Uma pergunta por tela. Campos = tabela de campos do relatório do
+             Bodhi: nome, empresa, telefone, US$ 999/mês (com o aviso da verba
+             de anúncios à parte) e, opcionais, gasto recente com marketing e
+             quem atende os pedidos (esse não desqualifica ninguém). A pergunta
+             do dinheiro fica por último, de propósito. Envia uma vez só, no
+             fim (o workflow "Forms DR" não separa envio parcial). -->
         <form class="lf" id="lf" novalidate>
-          <div class="row2">
-            <div class="f" data-req="text">
-              <label for="f-name">Seu nome</label>
-              <input id="f-name" name="name" type="text" autocomplete="name">
-              <p class="err">Digite seu nome.</p>
-            </div>
-            <div class="f" data-req="text">
-              <label for="f-company">Nome da empresa</label>
-              <input id="f-company" name="company" type="text" autocomplete="organization">
-              <p class="err">Digite o nome da empresa.</p>
-            </div>
+          <div class="bar" id="bar" aria-hidden="true"></div>
+          <div class="steps-top">
+            <button type="button" class="back" id="back" hidden>&larr; Voltar</button>
+            <p class="count" id="count" aria-live="polite"></p>
           </div>
-          <div class="row2">
-            <div class="f" data-req="phone">
-              <label for="f-phone">Celular (WhatsApp)</label>
-              <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 123-4567">
-              <p class="err">Digite um celular dos EUA com DDD.</p>
-            </div>
-            <div class="f" data-req="email">
-              <label for="f-email">E-mail</label>
-              <input id="f-email" name="email" type="email" autocomplete="email">
-              <p class="err">Digite um e-mail válido.</p>
-            </div>
+
+          <div class="step on" data-req="text">
+            <label class="q" for="f-name">Qual é o seu nome?</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" enterkeyhint="next">
+            <p class="err">Digite seu nome.</p>
+            <button type="button" class="cta next">Continuar</button>
           </div>
-          <div class="row2">
-            <div class="f" data-req="text">
-              <label for="f-service">Que serviço a sua empresa faz?</label>
-              <input id="f-service" name="service" type="text" placeholder="Ex.: remodeling, limpeza, pintura">
-              <p class="err">Conte que serviço você faz.</p>
-            </div>
-            <div class="f" data-req="text">
-              <label for="f-city">Cidade e estado onde atende</label>
-              <input id="f-city" name="city" type="text" placeholder="Ex.: Boston, MA">
-              <p class="err">Diga onde você atende.</p>
-            </div>
+
+          <div class="step" data-req="text">
+            <label class="q" for="f-company">Qual é o nome da sua empresa?</label>
+            <input id="f-company" name="company" type="text" autocomplete="organization" enterkeyhint="next">
+            <p class="err">Digite o nome da empresa.</p>
+            <button type="button" class="cta next">Continuar</button>
           </div>
-          <fieldset class="f">
-            <legend>Quem atende os pedidos de orçamento hoje? <span class="hint">Opcional</span></legend>
-            <div class="opts">
+
+          <div class="step" data-req="phone">
+            <label class="q" for="f-phone">Qual é o seu celular com WhatsApp?</label>
+            <p class="hint">Número dos EUA, com DDD.</p>
+            <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(555) 123-4567" enterkeyhint="next">
+            <p class="err">Digite um celular dos EUA com DDD.</p>
+            <button type="button" class="cta next">Continuar</button>
+          </div>
+
+          <div class="step" data-req="opt">
+            <p class="q" id="q-spend">Em média, quanto você investiu por mês em marketing nos últimos 6 meses?</p>
+            <p class="hint">Agência, anúncios e site. Opcional.</p>
+            <div class="opts" role="radiogroup" aria-labelledby="q-spend">
+              <label class="opt"><input type="radio" name="marketing_spend" value="Nada ainda">Nada ainda</label>
+              <label class="opt"><input type="radio" name="marketing_spend" value="Até US$ 500/mês">Até US$ 500</label>
+              <label class="opt"><input type="radio" name="marketing_spend" value="US$ 500 a 2.000/mês">De US$ 500 a US$ 2.000</label>
+              <label class="opt"><input type="radio" name="marketing_spend" value="Mais de US$ 2.000/mês">Mais de US$ 2.000</label>
+            </div>
+            <button type="button" class="skip">Pular esta pergunta</button>
+          </div>
+
+          <div class="step" data-req="opt">
+            <p class="q" id="q-team">Quem atende os pedidos de orçamento hoje?</p>
+            <p class="hint">Opcional.</p>
+            <div class="opts" role="radiogroup" aria-labelledby="q-team">
               <label class="opt"><input type="radio" name="sales_team" value="Eu mesmo">Eu mesmo</label>
               <label class="opt"><input type="radio" name="sales_team" value="Uma pessoa da equipe">Uma pessoa da equipe</label>
               <label class="opt"><input type="radio" name="sales_team" value="Equipe de vendas">Uma equipe de vendas</label>
             </div>
-          </fieldset>
-          <!-- ÚLTIMA pergunta, de propósito: qualifica pelo investimento mensal
-               do serviço (US$ 999/mês). A verba dos anúncios é à parte. -->
-          <fieldset class="f" data-req="radio">
-            <legend>Você tem disponibilidade de investir <strong>US$ 999 por mês</strong> no marketing da sua empresa? <span class="hint">É o valor do serviço completo. A verba dos anúncios é à parte.</span></legend>
-            <div class="opts">
+            <button type="button" class="skip">Pular esta pergunta</button>
+          </div>
+
+          <div class="step" data-req="radio">
+            <p class="q" id="q-budget">Você tem disponibilidade de investir US$ 999 por mês no marketing da sua empresa?</p>
+            <p class="hint">É o valor do serviço completo.</p>
+            <div class="opts" role="radiogroup" aria-labelledby="q-budget">
               <label class="opt"><input type="radio" name="budget" value="Sim, US$ 999/mês">Sim, tenho disponibilidade</label>
               <label class="opt"><input type="radio" name="budget" value="Não agora">Não agora</label>
             </div>
+            <p class="note">Além do serviço, pode ser preciso uma verba para anúncios. Ela é paga à parte, direto ao Google e à Meta.</p>
             <p class="err">Escolha uma opção.</p>
-          </fieldset>
+            <button class="cta" type="submit" id="f-go">Enviar</button>
+            <p class="fine">A gente usa esses dados só para falar com você sobre a Trench Ops. <a href="../privacidade/">Política de Privacidade</a></p>
+          </div>
+
           <div class="hp" aria-hidden="true"><label>Fax <input id="f-fax" name="fax" type="text" tabindex="-1" autocomplete="off"></label></div>
-          <button class="cta" type="submit" id="f-go">Enviar</button>
-          <p class="fine">A gente usa esses dados só para falar com você sobre a Trench Ops. <a href="../privacidade/">Política de Privacidade</a></p>
         </form>
         <div class="done" role="status" aria-live="polite">
           <h3>Recebemos, obrigado.</h3>
@@ -539,24 +565,86 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
    ════════════════════════════════════════════════════════════ */
 var WEBHOOK_URL = "https://services.leadconnectorhq.com/hooks/pLBD1TioRWvtJmmQut9n/webhook-trigger/721a78b1-b775-4846-9dbe-0251c2aa6ed9";
 
-/* ── pop-up ── */
 var modal = document.getElementById("modal");
-function abrir(){
-  modal.classList.add("open"); document.body.classList.add("travado"); modal.scrollTop = 0;
-  if (window.matchMedia("(pointer:fine)").matches) document.getElementById("f-name").focus({preventScroll:true});
-}
-function fechar(){ modal.classList.remove("open"); document.body.classList.remove("travado"); }
-document.querySelectorAll('a[href="#book"]').forEach(function(a){
-  a.addEventListener("click", function(e){ e.preventDefault(); abrir(); });
-});
-document.getElementById("modalClose").addEventListener("click", fechar);
-modal.addEventListener("click", function(e){ if (e.target === modal) fechar(); });
-document.addEventListener("keydown", function(e){ if (e.key === "Escape" && modal.classList.contains("open")) fechar(); });
-if (location.hash === "#book") abrir();
-
 var form = document.getElementById("lf");
 var shell = document.getElementById("book");
+var steps = [].slice.call(form.querySelectorAll(".step"));
+var bar = document.getElementById("bar");
+var back = document.getElementById("back");
+var count = document.getElementById("count");
 var phone = document.getElementById("f-phone");
+var atual = 0;
+var enviado = false;
+
+bar.innerHTML = steps.map(function(){ return "<span></span>"; }).join("");
+
+/* ── passos ── */
+function mostrar(i, foco){
+  atual = i;
+  steps.forEach(function(s, k){ s.classList.toggle("on", k === i); });
+  [].forEach.call(bar.children, function(b, k){ b.classList.toggle("on", k <= i); });
+  count.textContent = (i + 1) + " de " + steps.length;
+  back.hidden = i === 0;
+  shell.classList.toggle("primeira", i === 0);
+  modal.scrollTop = 0;
+  var campo = steps[i].querySelector("input[type=text],input[type=tel]");
+  if (campo && foco) campo.focus({preventScroll:true});
+}
+
+// o GHL disca e deduplica melhor em E.164; o público é US, então +1
+function toE164(v){
+  var d = (v || "").replace(/\D/g, "");
+  if (d.length === 11 && d.charAt(0) === "1") return "+" + d;
+  if (d.length === 10) return "+1" + d;
+  return "";
+}
+
+function valido(step){
+  var tipo = step.dataset.req;
+  if (tipo === "opt") return true;
+  if (tipo === "radio") return !!step.querySelector("input:checked");
+  var v = step.querySelector("input").value.trim();
+  if (tipo === "phone") return !!toE164(v);
+  return v.length > 1;
+}
+
+function avancar(){
+  var s = steps[atual];
+  var ok = valido(s);
+  s.classList.toggle("bad", !ok);
+  if (!ok){
+    var c = s.querySelector("input[type=text],input[type=tel]"); if (c) c.focus();
+    return;
+  }
+  if (atual < steps.length - 1) mostrar(atual + 1, true);
+  else enviar();
+}
+
+form.addEventListener("click", function(e){
+  if (e.target.closest(".next")) avancar();
+  else if (e.target.closest(".skip")) mostrar(atual + 1, true);
+});
+back.addEventListener("click", function(){ if (atual > 0) mostrar(atual - 1, true); });
+
+// Enter nos campos de texto avança em vez de enviar
+form.addEventListener("keydown", function(e){
+  if (e.key === "Enter" && e.target.matches("input[type=text],input[type=tel]")){ e.preventDefault(); avancar(); }
+});
+form.addEventListener("submit", function(e){ e.preventDefault(); avancar(); });
+
+// pergunta opcional: escolheu, já vai para a próxima
+form.addEventListener("change", function(e){
+  if (e.target.type !== "radio") return;
+  var s = e.target.closest(".step");
+  s.classList.remove("bad");
+  if (s.dataset.req === "opt") setTimeout(function(){ if (steps[atual] === s) mostrar(atual + 1, true); }, 220);
+});
+
+// tira o erro assim que a pessoa corrige o campo
+form.addEventListener("input", function(e){
+  var s = e.target.closest(".step");
+  if (s && s.classList.contains("bad") && valido(s)) s.classList.remove("bad");
+});
 
 phone.addEventListener("input", function(){
   var d = phone.value.replace(/\D/g, "");
@@ -567,46 +655,8 @@ phone.addEventListener("input", function(){
               : d.length ? "(" + d : "";
 });
 
-// o GHL disca e deduplica melhor em E.164; o público é US, então +1
-function toE164(v){
-  var d = (v || "").replace(/\D/g, "");
-  if (d.length === 11 && d.charAt(0) === "1") return "+" + d;
-  if (d.length === 10) return "+1" + d;
-  return "";
-}
-
-function valido(box){
-  var tipo = box.dataset.req;
-  if (tipo === "radio") return !!box.querySelector("input:checked");
-  var v = box.querySelector("input").value.trim();
-  if (tipo === "phone") return !!toE164(v);
-  if (tipo === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-  return v.length > 1;
-}
-
-// tira o erro assim que a pessoa corrige o campo
-form.addEventListener("input", function(e){
-  var box = e.target.closest("[data-req]");
-  if (box && box.classList.contains("bad") && valido(box)) box.classList.remove("bad");
-});
-
-var enviado = false;
-form.addEventListener("submit", function(e){
-  e.preventDefault();
+function enviar(){
   if (enviado) return;
-
-  var primeiroRuim = null;
-  form.querySelectorAll("[data-req]").forEach(function(box){
-    var ok = valido(box);
-    box.classList.toggle("bad", !ok);
-    if (!ok && !primeiroRuim) primeiroRuim = box;
-  });
-  if (primeiroRuim){
-    primeiroRuim.scrollIntoView({block:"center", behavior:"smooth"});
-    var alvo = primeiroRuim.querySelector("input"); if (alvo) alvo.focus({preventScroll:true});
-    return;
-  }
-
   enviado = true;
   document.getElementById("f-go").disabled = true;
 
@@ -628,14 +678,12 @@ form.addEventListener("submit", function(e){
     last_name: nome.slice(1).join(" "),
     phone: toE164(val("phone")),
     phone_formatted: val("phone"),
-    email: val("email"),
     company: val("company"),
-    service: val("service"),
-    city: val("city"),
     budget: budget,
     fit: fit,
+    marketing_spend: val("marketing_spend"),
     sales_team: val("sales_team"),
-    resumo: [val("service"), val("city"), budget].filter(Boolean).join(" · "),
+    resumo: [budget, val("marketing_spend"), val("sales_team")].filter(Boolean).join(" · "),
     origem: "vsl",
     utm_source: p.get("utm_source") || "",
     utm_medium: p.get("utm_medium") || "",
@@ -652,7 +700,22 @@ form.addEventListener("submit", function(e){
 
   shell.classList.add("sent");
   modal.scrollTop = 0;
+}
+
+/* ── pop-up ── */
+function abrir(){
+  modal.classList.add("open"); document.body.classList.add("travado");
+  if (!enviado) mostrar(atual, window.matchMedia("(pointer:fine)").matches);
+}
+function fechar(){ modal.classList.remove("open"); document.body.classList.remove("travado"); }
+document.querySelectorAll('a[href="#book"]').forEach(function(a){
+  a.addEventListener("click", function(e){ e.preventDefault(); abrir(); });
 });
+document.getElementById("modalClose").addEventListener("click", fechar);
+modal.addEventListener("click", function(e){ if (e.target === modal) fechar(); });
+document.addEventListener("keydown", function(e){ if (e.key === "Escape" && modal.classList.contains("open")) fechar(); });
+mostrar(0, false);
+if (location.hash === "#book") abrir();
 </script>
 
 </body>
