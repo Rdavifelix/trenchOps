@@ -94,12 +94,20 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   @media(prefers-reduced-motion:reduce){.cta{transition:none}}
 
   /* ═══ PRIMEIRA DOBRA ═══
-     Celular: altura natural, vídeo na largura cheia (cabe até em 360×640;
-     telas mais baixas ganham tudo um pouco menor).
+     Celular: no mínimo a altura da tela, vídeo na largura cheia (cabe até em
+     360×640; telas mais baixas ganham tudo um pouco menor).
      PC: a dobra tem a altura da tela. O vídeo (.vsl-area) cresce até ocupar
      o espaço que sobra depois do texto e do botão, mas nunca passa da altura
      de um vídeo na largura cheia da coluna; o que sobrar vira respiro. */
   .fold{display:flex;flex-direction:column;align-items:center;gap:14px;padding:18px 16px 32px}
+  /* Celular: a dobra ocupa a tela inteira para o título da seção seguinte não
+     aparecer junto com o H1. O logo fica no topo e o resto se centraliza no
+     espaço que sobra. */
+  @media(max-width:759px){
+    .fold{min-height:100vh;min-height:100svh}
+    .fold .eyebrow{margin-top:auto}
+    .fold .cta{margin-bottom:auto}
+  }
   @media(min-width:760px){.fold{height:100vh;height:100svh;min-height:540px;justify-content:center;gap:20px;padding:22px 24px 28px}}
 
   .logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex:none}
