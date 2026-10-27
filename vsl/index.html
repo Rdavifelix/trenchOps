@@ -284,9 +284,6 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .err{display:none;font-size:14px;font-weight:600;color:#c62828;margin:0}
   .step.bad .err{display:block}
   .note{margin:0;font-size:14px;line-height:1.5;color:var(--body);background:var(--tint);border-left:3px solid #cfd3da;padding:10px 12px}
-  .skip{align-self:center;border:0;background:none;padding:8px;font:600 15px/1 'Inter',system-ui,sans-serif;color:var(--muted);
-        text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-  .skip:hover{color:var(--ink)}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
   .lf .cta{width:100%;max-width:none;margin-top:4px}
   .lf .cta[disabled]{opacity:.7;cursor:default}
@@ -468,8 +465,9 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
         </div>
         <!-- Uma pergunta por tela. Campos = tabela de campos do relatório do
              Bodhi: nome, empresa, telefone, US$ 999/mês (com o aviso da verba
-             de anúncios à parte) e, opcionais, gasto recente com marketing e
-             quem atende os pedidos (esse não desqualifica ninguém). A pergunta
+             de anúncios à parte), gasto recente com marketing e quem atende os
+             pedidos (esse não desqualifica ninguém). Todas obrigatórias
+             (pedido do Kauan em 26/10/2026). A pergunta
              do dinheiro fica por último, de propósito. Envia uma vez só, no
              fim (o workflow "Forms DR" não separa envio parcial). -->
         <form class="lf" id="lf" novalidate>
@@ -501,27 +499,26 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
             <button type="button" class="cta next">Continuar</button>
           </div>
 
-          <div class="step" data-req="opt">
+          <div class="step" data-req="radio">
             <p class="q" id="q-spend">Em média, quanto você investiu por mês em marketing nos últimos 6 meses?</p>
-            <p class="hint">Agência, anúncios e site. Opcional.</p>
+            <p class="hint">Agência, anúncios e site.</p>
             <div class="opts" role="radiogroup" aria-labelledby="q-spend">
               <label class="opt"><input type="radio" name="marketing_spend" value="Nada ainda">Nada ainda</label>
               <label class="opt"><input type="radio" name="marketing_spend" value="Até US$ 500/mês">Até US$ 500</label>
               <label class="opt"><input type="radio" name="marketing_spend" value="US$ 500 a 2.000/mês">De US$ 500 a US$ 2.000</label>
               <label class="opt"><input type="radio" name="marketing_spend" value="Mais de US$ 2.000/mês">Mais de US$ 2.000</label>
             </div>
-            <button type="button" class="skip">Pular esta pergunta</button>
+            <p class="err">Escolha uma opção.</p>
           </div>
 
-          <div class="step" data-req="opt">
+          <div class="step" data-req="radio">
             <p class="q" id="q-team">Quem atende os pedidos de orçamento hoje?</p>
-            <p class="hint">Opcional.</p>
             <div class="opts" role="radiogroup" aria-labelledby="q-team">
               <label class="opt"><input type="radio" name="sales_team" value="Eu mesmo">Eu mesmo</label>
               <label class="opt"><input type="radio" name="sales_team" value="Uma pessoa da equipe">Uma pessoa da equipe</label>
               <label class="opt"><input type="radio" name="sales_team" value="Equipe de vendas">Uma equipe de vendas</label>
             </div>
-            <button type="button" class="skip">Pular esta pergunta</button>
+            <p class="err">Escolha uma opção.</p>
           </div>
 
           <div class="step" data-req="radio">
@@ -601,7 +598,6 @@ function toE164(v){
 
 function valido(step){
   var tipo = step.dataset.req;
-  if (tipo === "opt") return true;
   if (tipo === "radio") return !!step.querySelector("input:checked");
   var v = step.querySelector("input").value.trim();
   if (tipo === "phone") return !!toE164(v);
@@ -622,7 +618,6 @@ function avancar(){
 
 form.addEventListener("click", function(e){
   if (e.target.closest(".next")) avancar();
-  else if (e.target.closest(".skip")) mostrar(atual + 1, true);
 });
 back.addEventListener("click", function(){ if (atual > 0) mostrar(atual - 1, true); });
 
@@ -632,12 +627,13 @@ form.addEventListener("keydown", function(e){
 });
 form.addEventListener("submit", function(e){ e.preventDefault(); avancar(); });
 
-// pergunta opcional: escolheu, já vai para a próxima
-form.addEventListener("change", function(e){
+// clicou numa opção, já vai para a próxima (menos no último passo, que tem o
+// Enviar). "click" e não "change": quem voltou e clica na mesma opção também segue.
+form.addEventListener("click", function(e){
   if (e.target.type !== "radio") return;
   var s = e.target.closest(".step");
   s.classList.remove("bad");
-  if (s.dataset.req === "opt") setTimeout(function(){ if (steps[atual] === s) mostrar(atual + 1, true); }, 220);
+  if (s !== steps[steps.length - 1]) setTimeout(function(){ if (steps[atual] === s) mostrar(atual + 1, true); }, 220);
 });
 
 // tira o erro assim que a pessoa corrige o campo
