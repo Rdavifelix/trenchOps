@@ -278,32 +278,22 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .legal a{font-size:12px;color:var(--muted);text-decoration:underline;text-underline-offset:2px}
   .legal a:hover{color:var(--ink)}
 
-  /* ═══ POP-UP DO FORMULÁRIO ═══
-     Com JS a página ganha a classe .js e o pop-up some até alguém clicar;
-     sem JS ele fica no fim da página e o link #book rola até ele. */
-  .modal{width:100%;max-width:640px;margin:0 auto;padding:0 16px 48px}
-  .js .modal{position:fixed;inset:0;z-index:50;max-width:none;display:none;overflow-y:auto;
-             overscroll-behavior:contain;background:rgba(10,14,22,.62);padding:16px 12px}
-  @media(min-width:640px){.js .modal{padding:48px 24px}}
-  .js .modal.open{display:block}
-  .modal-box{position:relative;width:100%;max-width:640px;margin:0 auto}
-  .js .modal-box{padding-top:44px}
-  .modal-close{display:none}
-  .js .modal-close{display:flex;position:absolute;top:0;right:0;width:38px;height:38px;align-items:center;
-                   justify-content:center;border:0;border-radius:2px;background:#fff;color:var(--ink);cursor:pointer}
-  .modal-close svg{width:20px;height:20px}
-  body.travado{overflow:hidden}
-
+  /* ═══ FORMULÁRIO (seção no fim da página) ═══
+     Os botões "trabalhar conosco" rolam até aqui; o formulário aparece
+     na própria página, uma pergunta por vez. */
+  .modal{width:100%;max-width:640px;margin:0 auto;padding:64px 16px 48px}
+  @media(min-width:760px){.modal{padding-top:96px}}
+  .modal-box{position:relative;width:100%}
   .form-shell{position:relative;width:100%;scroll-margin-top:24px;border:1px solid var(--line);border-radius:4px;
               background:#fff;padding:36px 20px 28px;overflow:hidden}
   @media(min-width:640px){.form-shell{padding:48px 44px 40px}}
-  .modal-head{display:flex;flex-direction:column;gap:10px;margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--line)}
-  .modal-head h2{margin:0;font-size:24px;line-height:1.2;font-weight:800;letter-spacing:-.015em}
-  @media(min-width:640px){.modal-head h2{font-size:28px}}
+  .modal-head{display:flex;flex-direction:column;align-items:center;gap:14px;margin:0 auto 32px;text-align:center}
+  .modal-head h2{margin:0;font-size:30px;line-height:1.2;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+  .modal-head p{margin:0;font-size:17px;line-height:1.55;color:var(--body);text-wrap:balance}
+  @media(min-width:760px){.modal-head h2{font-size:40px}.modal-head p{font-size:19px}}
   /* Formulário em passos no layout da referência (barra contínua no topo,
      "Voltar", pergunta com asterisco, opções com letra), na paleta da Trench.
      O título do topo só aparece no primeiro passo. */
-  .form-shell:not(.primeira) .modal-head{display:none}
   .lf{display:block}
   .bar{position:absolute;top:0;left:0;right:0;height:6px;background:#dbe5fb}
   .bar span{display:block;height:100%;width:0;background:var(--blue-2);transition:width .25s ease}
@@ -351,7 +341,7 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .done{display:none;text-align:center;padding:12px 0}
   .done h3{margin:0 0 10px;font-size:24px;font-weight:800;letter-spacing:-.01em}
   .done p{margin:0;font-size:17px;line-height:1.55;color:var(--body)}
-  .form-shell.sent .lf,.form-shell.sent .modal-head{display:none}
+  .form-shell.sent .lf{display:none}
   .form-shell.sent .done{display:block}
 </style>
 </head>
@@ -528,17 +518,14 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
     </div>
   </section>
 
-  <!-- Pop-up do formulário. Abre por qualquer link para #book; sem JS, o
-       link só rola até aqui. -->
-  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <!-- Formulário no fim da página. Todo link para #book rola até aqui. -->
+  <section class="modal" id="book" aria-labelledby="modalTitle">
     <div class="modal-box">
-      <button type="button" class="modal-close" id="modalClose" aria-label="Fechar">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-      </button>
-      <div id="book" class="form-shell">
-        <div class="modal-head">
-          <h2 id="modalTitle">Preencha para trabalhar conosco</h2>
-        </div>
+      <div class="modal-head">
+        <h2 id="modalTitle">Faça seu cadastro para trabalhar conosco.</h2>
+        <p>Isso não é um serviço único de Perfil do Google. Nós implementamos a Estratégia de Multi-listagem para serviços contínuos e completos, para clientes que querem o Google Maps gerando leads entrando em contato todos os meses.</p>
+      </div>
+      <div id="lf-shell" class="form-shell">
         <!-- Uma pergunta por tela, todas obrigatórias. Perguntas no modelo do
              formulário da Stryker (enviadas pelo Kauan em 26/10/2026), com o
              faturamento em faixas MENSAIS, a pergunta dos US$ 999/mês (mantida
@@ -652,7 +639,7 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
 </main>
 
@@ -672,9 +659,8 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
    ════════════════════════════════════════════════════════════ */
 var WEBHOOK_URL = "https://services.leadconnectorhq.com/hooks/pLBD1TioRWvtJmmQut9n/webhook-trigger/721a78b1-b775-4846-9dbe-0251c2aa6ed9";
 
-var modal = document.getElementById("modal");
 var form = document.getElementById("lf");
-var shell = document.getElementById("book");
+var shell = document.getElementById("lf-shell");
 var steps = [].slice.call(form.querySelectorAll(".step"));
 var bar = document.getElementById("bar");
 var back = document.getElementById("back");
@@ -690,7 +676,8 @@ function mostrar(i, foco){
   bar.style.width = ((i + 1) / steps.length * 100) + "%";
   back.hidden = i === 0;
   shell.classList.toggle("primeira", i === 0);
-  modal.scrollTop = 0;
+  var topo = shell.getBoundingClientRect().top;
+  if (foco !== false && topo < 0) shell.scrollIntoView({block:"start"});
   var campo = steps[i].querySelector(CAMPOS);
   if (campo && foco) campo.focus({preventScroll:true});
 }
@@ -810,7 +797,7 @@ function enviar(){
   if (typeof fbq === "function") fbq("track", "Lead");
 
   shell.classList.add("sent");
-  modal.scrollTop = 0;
+  shell.scrollIntoView({block:"start"});
 
   // vai para a página de obrigado com as UTMs; o primeiro nome segue pelo
   // sessionStorage (não pela URL). Espera o webhook responder, no máximo 1,5 s:
@@ -824,31 +811,26 @@ function enviar(){
 
 // teclas A, B, C… escolhem a opção da tela atual, como na letra de cada opção
 document.addEventListener("keydown", function(e){
-  if (!modal.classList.contains("open") || enviado || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (!abriuForm || enviado || !emTela() || e.metaKey || e.ctrlKey || e.altKey) return;
   if (e.target.matches(CAMPOS)) return;
   var opcoes = steps[atual].querySelectorAll(".opt input");
   var k = e.key.length === 1 ? e.key.toUpperCase().charCodeAt(0) - 65 : -1;
   if (k >= 0 && k < opcoes.length){ e.preventDefault(); opcoes[k].click(); }
 });
 
-/* ── pop-up ── */
+/* ── abertura ── */
 var abriuForm = false;
+function emTela(){ var r = shell.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; }
 function abrir(){
-  modal.classList.add("open"); document.body.classList.add("travado");
-  if (!enviado) mostrar(atual, window.matchMedia("(pointer:fine)").matches);
   // pixel: a primeira abertura do formulário (o Lead sai no envio)
   if (!abriuForm && typeof fbq === "function") fbq("trackCustom", "FormularioAberto");
   abriuForm = true;
 }
-function fechar(){ modal.classList.remove("open"); document.body.classList.remove("travado"); }
 document.querySelectorAll('a[href="#book"]').forEach(function(a){
-  a.addEventListener("click", function(e){ e.preventDefault(); abrir(); });
+  a.addEventListener("click", abrir);
 });
-document.getElementById("modalClose").addEventListener("click", fechar);
-modal.addEventListener("click", function(e){ if (e.target === modal) fechar(); });
-document.addEventListener("keydown", function(e){ if (e.key === "Escape" && modal.classList.contains("open")) fechar(); });
 mostrar(0, false);
-if (location.hash === "#book") abrir();
+if (location.hash === "#book"){ abrir(); document.getElementById("book").scrollIntoView(); }
 </script>
 
 </body>
