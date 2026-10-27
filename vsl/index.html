@@ -225,6 +225,29 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
   .apply{margin:48px auto 0;max-width:640px;display:flex;flex-direction:column;align-items:center;gap:14px}
   @media(min-width:760px){.apply{margin-top:64px}}
 
+  /* ═══ DEPOIMENTOS (entre "método em prática" e o FAQ) ═══
+     Modelo da seção "Real Client Results" da stryker-digital.com/b/vsl:
+     vídeos 9:16 num trilho horizontal (grade de vertical empilhado vira uma
+     rolagem enorme no celular), nome e empresa embaixo, botão no fim.
+     Cada .vid-frame recebe um <video> ou <iframe>; enquanto não tem arquivo,
+     o .slot mostra o aviso pontilhado (classe .ph, igual ao texto provisório). */
+  .depo{padding:64px 16px 72px;display:flex;flex-direction:column;align-items:center;gap:28px}
+  @media(min-width:760px){.depo{padding:96px 24px 104px;gap:40px}}
+  .depo h2{margin:0 auto;max-width:860px;font-size:30px;line-height:1.22;font-weight:800;letter-spacing:-.02em;text-align:center;text-wrap:balance}
+  @media(min-width:760px){.depo h2{font-size:42px}}
+  .rail{width:100%;max-width:1180px;display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
+        padding:4px 4px 14px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .rail::-webkit-scrollbar{height:6px}.rail::-webkit-scrollbar-thumb{background:#cfdaf7;border-radius:3px}
+  /* 'safe center': com poucos vídeos fica centralizado; com muitos, começa
+     da esquerda e rola (center puro cortaria o primeiro). */
+  .rail{justify-content:safe center}
+  .vid{flex:0 0 min(258px,66vw);scroll-snap-align:start}
+  .vid-frame{position:relative;aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:#0a0a0b;border:1px solid var(--line)}
+  .vid-frame video,.vid-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover;display:block}
+  .vid-frame .slot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;
+                   color:#9aa0ab;font-size:13px;line-height:1.45}
+  .vid-name{margin:12px 0 0;font-size:15px;font-weight:700;color:var(--ink)}
+  .vid-biz{margin:3px 0 0;font-size:13px;color:var(--muted)}
   /* ═══ PERGUNTAS FREQUENTES ═══ */
   .faq{padding:64px 16px 24px}
   @media(min-width:760px){.faq{padding:96px 24px 32px}}
@@ -458,6 +481,23 @@ src="https://www.facebook.com/tr?id=937305316114895&ev=PageView&noscript=1" alt=
     <div class="apply">
       <a class="cta" href="#book">Aplicar para trabalhar conosco</a>
     </div>
+  </section>
+
+  <!-- ═══════════════ DEPOIMENTOS ═══════════════
+       Só depoimento REAL de cliente. Para cada um: copiar um .vid, colocar o
+       vídeo (9:16) em assets/vsl/depo-<nome>.mp4 com poster, e trocar o
+       .slot por <video controls preload="none" playsinline poster="…"><source src="…" type="video/mp4"></video>.
+       O .ph (pontilhado vermelho) marca o que ainda é provisório. -->
+  <section class="depo">
+    <h2>Resultados reais de clientes</h2>
+    <div class="rail">
+      <div class="vid">
+        <div class="vid-frame ph"><div class="slot">Vídeo do depoimento<br>(9:16, assets/vsl/depo-1.mp4)</div></div>
+        <p class="vid-name ph">[Nome do cliente]</p>
+        <p class="vid-biz">[Empresa · serviço]</p>
+      </div>
+    </div>
+    <a class="cta" href="#book">Aplicar para trabalhar conosco</a>
   </section>
 
   <!-- ═══════════════ PERGUNTAS FREQUENTES ═══════════════
